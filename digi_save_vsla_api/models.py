@@ -69,7 +69,7 @@ class GroupMembers(models.Model):
         return f"GroupMember {self.user_id} for Group ID: {self.group_id}"
 
 class CycleSchedules(models.Model):
-    group_id = models.ForeignKey(GroupProfile, on_delete=models.CASCADE)
+    group = models.ForeignKey(GroupProfile, on_delete=models.CASCADE)
     meeting_duration = models.TextField()
     number_of_meetings = models.IntegerField()
     meeting_frequency = models.TextField()
@@ -96,8 +96,7 @@ class AssignedPositions(models.Model):
         return self.position
 
 class GroupForm(models.Model):
-    group_profile_id = models.ForeignKey(GroupProfile, on_delete=models.CASCADE)
-    group_id = models.IntegerField(default=None, blank=True, null=True)
+    group = models.ForeignKey(GroupProfile, on_delete=models.CASCADE)
     logged_in_users_id = models.ForeignKey(Users, on_delete=models.CASCADE)
     constitution_id = models.ForeignKey(ConstitutionTable, on_delete=models.CASCADE)
     cycle_schedule_id = models.ForeignKey(CycleSchedules, on_delete=models.CASCADE)

@@ -14,7 +14,6 @@ def group_form_list(request):
     try:
         if request.method == 'POST':
             group_profile_id = data.get('group_profile_id')
-            group_id = data.get('group_id')
             logged_in_users_id = data.get('logged_in_users_id')
             constitution_id = data.get('constitution_id')
             cycle_schedule_id = data.get('cycle_schedule_id')
@@ -31,8 +30,7 @@ def group_form_list(request):
             # assigned_position = AssignedPositions.objects.get(id=assigned_position_id)
 
             group_form = GroupForm(
-                group_profile_id=group_profile,
-                group_id=group_id,
+                group=group_profile,
                 logged_in_users_id=logged_in_users,
                 constitution_id=constitution,
                 cycle_schedule_id=cycle_schedule,
@@ -51,13 +49,12 @@ def group_form_list(request):
             group_form_data = []
             for group_form in group_forms:
                 group_form_data.append({
-                    'group_profile_id': group_form.group_profile_id.id,
-                    'group_id': group_form.group_id,
-                    'logged_in_users_id': group_form.logged_in_users_id.id,
-                    'constitution_id': group_form.constitution_id.id,
-                    'cycle_schedule_id': group_form.cycle_schedule_id.id,
-                    'group_member_id': group_form.group_member_id.id,
-                    'assigned_position_id': group_form.assigned_position_id.id,
+                    'group_profile_id': group_form.group,
+                    'logged_in_users_id': group_form.logged_in_users_id,
+                    'constitution_id': group_form.constitution_id,
+                    'cycle_schedule_id': group_form.cycle_schedule_id,
+                    'group_member_id': group_form.group_member_id,
+                    'assigned_position_id': group_form.assigned_position_id,
                 })
             return JsonResponse({
                 'status': 'success',

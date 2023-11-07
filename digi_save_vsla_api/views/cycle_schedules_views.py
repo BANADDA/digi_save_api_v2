@@ -29,7 +29,7 @@ def cycle_schedules_list(request):
 
 
             cycle_schedules = CycleSchedules(
-                group_id=group_profile,
+                group=group_profile,
                 meeting_duration=meeting_duration,
                 number_of_meetings=number_of_meetings,
                 meeting_frequency=meeting_frequency,
@@ -50,7 +50,7 @@ def cycle_schedules_list(request):
             CycleSchedules_data = []
             for cycle_schedules in cycleSchedules_:
                 CycleSchedules_data.append({
-                    'group_id': cycle_schedules.group_id.id,
+                    'group_id': cycle_schedules.group,
                     'meeting_duration': cycle_schedules.meeting_duration,
                     'number_of_meetings': cycle_schedules.number_of_meetings,
                     'meeting_frequency': cycle_schedules.meeting_frequency,
