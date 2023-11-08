@@ -19,7 +19,7 @@ class GroupProfile(models.Model):
         return self.groupName
     
 class ConstitutionTable(models.Model):
-    group = models.ForeignKey(GroupProfile, on_delete=models.CASCADE)
+    group = models.ForeignKey(GroupProfile, on_delete=models.CASCADE, db_column='group')
     hasConstitution = models.IntegerField(default=None, blank=True, null=True)
     constitutionFiles = models.BinaryField(default=None, blank=True, null=True)
     usesGroupShares = models.BooleanField(default=None, blank=True, null=True)
@@ -62,14 +62,14 @@ class Users(models.Model):
         return f"{self.fname} {self.lname}"
 
 class GroupMembers(models.Model):
-    user = models.ForeignKey(Users, on_delete=models.CASCADE)
-    group = models.ForeignKey(GroupProfile, on_delete=models.CASCADE)
+    user = models.ForeignKey(Users, on_delete=models.CASCADE,db_column='user' )
+    group = models.ForeignKey(GroupProfile, on_delete=models.CASCADE, db_column='group')
 
     def __str__(self):
         return f"GroupMember {self.user_id} for Group ID: {self.group}"
 
 class CycleSchedules(models.Model):
-    group = models.ForeignKey(GroupProfile, on_delete=models.CASCADE)
+    group = models.ForeignKey(GroupProfile, on_delete=models.CASCADE, db_column='group')
     meeting_duration = models.TextField()
     number_of_meetings = models.IntegerField()
     meeting_frequency = models.TextField()
@@ -89,37 +89,37 @@ class Positions(models.Model):
     
 class AssignedPositions(models.Model):
     position = models.IntegerField(default=None, blank=True, null=True)
-    member = models.ForeignKey(GroupMembers, on_delete=models.CASCADE)
-    group = models.ForeignKey(GroupProfile, on_delete=models.CASCADE)
+    member = models.ForeignKey(GroupMembers, on_delete=models.CASCADE, db_column='member')
+    group = models.ForeignKey(GroupProfile, on_delete=models.CASCADE, db_column='group')
     
     def __str__(self):
         return self.position
 
 class GroupForm(models.Model):
-    group = models.ForeignKey(GroupProfile, on_delete=models.CASCADE)
-    logged_in_users = models.ForeignKey(Users, on_delete=models.CASCADE)
-    constitution = models.ForeignKey(ConstitutionTable, on_delete=models.CASCADE)
-    cycle_schedule = models.ForeignKey(CycleSchedules, on_delete=models.CASCADE)
-    group_member = models.ForeignKey(GroupMembers, on_delete=models.CASCADE)
-    assigned_position = models.ForeignKey(AssignedPositions, on_delete=models.CASCADE)
+    group = models.ForeignKey(GroupProfile, on_delete=models.CASCADE, db_column='group')
+    logged_in_users = models.ForeignKey(Users, on_delete=models.CASCADE, db_column='logged_in_users')
+    constitution = models.ForeignKey(ConstitutionTable, on_delete=models.CASCADE, db_column='constitution')
+    cycle_schedule = models.ForeignKey(CycleSchedules, on_delete=models.CASCADE, db_column='cycle_schedule')
+    group_member = models.ForeignKey(GroupMembers, on_delete=models.CASCADE, db_column='group_member')
+    assigned_position = models.ForeignKey(AssignedPositions, on_delete=models.CASCADE, db_column='assigned_position')
     
     def __str__(self):
         return self.group
     
 class SavingsAccount(models.Model):
-    logged_in_users = models.ForeignKey(Users, on_delete=models.CASCADE)
+    logged_in_users = models.ForeignKey(Users, on_delete=models.CASCADE, db_column='logged_in_users')
     date = models.TextField()
     purpose = models.TextField()
     amount = models.FloatField()
     
-    group = models.ForeignKey(GroupForm, on_delete=models.CASCADE)
+    group = models.ForeignKey(GroupForm, on_delete=models.CASCADE, db_column='group')
 
     def __str__(self):
         return self.group
 
 class GroupFees(models.Model):
-    member = models.ForeignKey(GroupMembers, on_delete=models.CASCADE)
-    group = models.ForeignKey(GroupForm, on_delete=models.CASCADE)
+    member = models.ForeignKey(GroupMembers, on_delete=models.CASCADE, db_column='member')
+    group = models.ForeignKey(GroupForm, on_delete=models.CASCADE, db_column='group')
     registration_fee = models.FloatField()
     
     def __str__(self):
@@ -144,7 +144,7 @@ class CycleMeeting(models.Model):
     socialFundContributions = models.TextField()
     sharePurchases = models.TextField()
     
-    group = models.ForeignKey(GroupForm, on_delete=models.CASCADE)
+    group = models.ForeignKey(GroupForm, on_delete=models.CASCADE, db_column='group')
     
     def __str__(self):
         return self.group
@@ -168,8 +168,8 @@ class Meeting(models.Model):
     totalLoanFund = models.IntegerField()
     totalSocialFund = models.IntegerField()
     
-    group = models.ForeignKey(GroupForm, on_delete=models.CASCADE)
-    cycle = models.ForeignKey(CycleMeeting, on_delete=models.CASCADE)
+    group = models.ForeignKey(GroupForm, on_delete=models.CASCADE, db_column='group')
+    cycle = models.ForeignKey(CycleMeeting, on_delete=models.CASCADE,  db_column='cycle')
     
     def __str__(self):
         return self.group
@@ -180,28 +180,28 @@ class MemberShares(models.Model):
     date = models.TextField()
     sharePurchases = models.TextField()
     
-    meeting = models.ForeignKey(Meeting, on_delete=models.CASCADE)
-    users = models.ForeignKey(Users, on_delete=models.CASCADE)
-    group = models.ForeignKey(GroupForm, on_delete=models.CASCADE)
-    cycle = models.ForeignKey(CycleMeeting, on_delete=models.CASCADE)
+    meeting = models.ForeignKey(Meeting, on_delete=models.CASCADE, db_column='meeting')
+    users = models.ForeignKey(Users, on_delete=models.CASCADE, db_column='users')
+    group = models.ForeignKey(GroupForm, on_delete=models.CASCADE, db_column='group')
+    cycle = models.ForeignKey(CycleMeeting, on_delete=models.CASCADE,  db_column='cycle')
     
     def __str__(self):
         return self.group
     
 class WelfareAccount(models.Model):
-    logged_in_users = models.ForeignKey(Users, on_delete=models.CASCADE)
+    logged_in_users = models.ForeignKey(Users, on_delete=models.CASCADE, db_column='logged_in_users')
     amount = models.FloatField()
-    group = models.ForeignKey(GroupForm, on_delete=models.CASCADE)
-    meeting = models.ForeignKey(Meeting, on_delete=models.CASCADE)
-    cycle = models.ForeignKey(CycleMeeting, on_delete=models.CASCADE)
+    group = models.ForeignKey(GroupForm, on_delete=models.CASCADE, db_column='group')
+    meeting = models.ForeignKey(Meeting, on_delete=models.CASCADE, db_column='meeting')
+    cycle = models.ForeignKey(CycleMeeting, on_delete=models.CASCADE,  db_column='cycle')
     
     def __str__(self):
         return self.group
 
 class ActiveCycleMeeting(models.Model):
     
-    group = models.ForeignKey(GroupProfile, on_delete=models.CASCADE)
-    cycleMeetingID = models.ForeignKey(CycleMeeting, on_delete=models.CASCADE)
+    group = models.ForeignKey(GroupProfile, on_delete=models.CASCADE, db_column='group')
+    cycleMeetingID = models.ForeignKey(CycleMeeting, on_delete=models.CASCADE, db_column='cycleMeetingID')
     
     def __str__(self):
         return self.group
@@ -209,9 +209,9 @@ class ActiveCycleMeeting(models.Model):
 class Shares(models.Model):
     sharePurchases = models.TextField()
     
-    meetingId = models.ForeignKey(Meeting, on_delete=models.CASCADE)
-    cycle = models.ForeignKey(CycleMeeting, on_delete=models.CASCADE)
-    group = models.ForeignKey(GroupForm, on_delete=models.CASCADE)
+    meetingId = models.ForeignKey(Meeting, on_delete=models.CASCADE, db_column='meetingId')
+    cycle = models.ForeignKey(CycleMeeting, on_delete=models.CASCADE,  db_column='cycle')
+    group = models.ForeignKey(GroupForm, on_delete=models.CASCADE, db_column='group')
     
     def __str__(self):
         return self.group
@@ -220,30 +220,30 @@ class Shares(models.Model):
 class Social(models.Model):
     socialFund = models.TextField()
     
-    meetingId = models.ForeignKey(Meeting, on_delete=models.CASCADE)
+    meetingId = models.ForeignKey(Meeting, on_delete=models.CASCADE, db_column='meetingId')
     
     def __str__(self):
         return self.meetingId
 
 class GroupLink(models.Model):
-    group = models.ForeignKey(GroupProfile, on_delete=models.CASCADE)
+    group = models.ForeignKey(GroupProfile, on_delete=models.CASCADE, db_column='group')
     group_name = models.TextField()
     group_image_path = models.TextField()
-    constitution = models.ForeignKey(ConstitutionTable, on_delete=models.CASCADE)
-    cycle_schedule = models.ForeignKey(CycleSchedules, on_delete=models.CASCADE)
-    group_members = models.ForeignKey(GroupMembers, on_delete=models.CASCADE)
-    assigned_positions = models.ForeignKey(AssignedPositions, on_delete=models.CASCADE)
+    constitution = models.ForeignKey(ConstitutionTable, on_delete=models.CASCADE, db_column='constitution')
+    cycle_schedule = models.ForeignKey(CycleSchedules, on_delete=models.CASCADE, db_column='cycle_schedule')
+    group_members = models.ForeignKey(GroupMembers, on_delete=models.CASCADE, db_column='group_members')
+    assigned_positions = models.ForeignKey(AssignedPositions, on_delete=models.CASCADE, db_column='assigned_positions')
     
     def __str__(self):
         return self.group_name
 
 class LoanApplications(models.Model):
-    group = models.ForeignKey(GroupForm, on_delete=models.CASCADE)
-    cycle = models.ForeignKey(CycleMeeting, on_delete=models.CASCADE)
-    meeting = models.ForeignKey(Meeting, on_delete=models.CASCADE)
+    group = models.ForeignKey(GroupForm, on_delete=models.CASCADE, db_column='group')
+    cycle = models.ForeignKey(CycleMeeting, on_delete=models.CASCADE,  db_column='cycle')
+    meeting = models.ForeignKey(Meeting, on_delete=models.CASCADE, db_column='meeting')
     submission_date = models.TextField()
     loan_applicant = models.TextField()
-    group_member = models.ForeignKey(GroupMembers, on_delete=models.CASCADE)
+    group_member = models.ForeignKey(GroupMembers, on_delete=models.CASCADE, db_column='group_member')
     amount_needed = models.FloatField()
     loan_purpose = models.TextField()
     repayment_date = models.TextField()
@@ -253,12 +253,12 @@ class LoanApplications(models.Model):
 
 
 class SocialFundApplications(models.Model):
-    group = models.ForeignKey(GroupForm, on_delete=models.CASCADE)
-    cycle = models.ForeignKey(CycleMeeting, on_delete=models.CASCADE)
-    meeting = models.ForeignKey(Meeting, on_delete=models.CASCADE)
+    group = models.ForeignKey(GroupForm, on_delete=models.CASCADE, db_column='group')
+    cycle = models.ForeignKey(CycleMeeting, on_delete=models.CASCADE,  db_column='cycle')
+    meeting = models.ForeignKey(Meeting, on_delete=models.CASCADE, db_column='meeting')
     submission_date = models.TextField()
     applicant = models.TextField()
-    group_member = models.ForeignKey(GroupMembers, on_delete=models.CASCADE)
+    group_member = models.ForeignKey(GroupMembers, on_delete=models.CASCADE, db_column='group_member')
     amount_needed = models.FloatField()
     social_purpose = models.TextField()
     repayment_date = models.TextField()
@@ -288,10 +288,10 @@ class CycleStartMeeting(models.Model):
 
 
 class PaymentInfo(models.Model):
-    group = models.ForeignKey(GroupForm, on_delete=models.CASCADE)
-    cycle = models.ForeignKey(CycleMeeting, on_delete=models.CASCADE)
-    meeting = models.ForeignKey(Meeting, on_delete=models.CASCADE)
-    meeting = models.ForeignKey(GroupMembers, on_delete=models.CASCADE)
+    group = models.ForeignKey(GroupForm, on_delete=models.CASCADE, db_column='group')
+    cycle = models.ForeignKey(CycleMeeting, on_delete=models.CASCADE,  db_column='cycle')
+    meeting = models.ForeignKey(Meeting, on_delete=models.CASCADE,  db_column='meeting')
+    member = models.ForeignKey(GroupMembers, on_delete=models.CASCADE, db_column='member')
     payment_amount = models.FloatField()
     payment_date = models.TextField()
     
@@ -300,30 +300,30 @@ class PaymentInfo(models.Model):
     
 
 class Fines(models.Model):
-    memberId = models.ForeignKey(GroupMembers, on_delete=models.CASCADE)
+    memberId = models.ForeignKey(GroupMembers, on_delete=models.CASCADE, db_column='memberId')
     amount = models.IntegerField()
     reason = models.TextField()
-    groupId = models.ForeignKey(GroupForm, on_delete=models.CASCADE)
-    cycleId = models.ForeignKey(CycleMeeting, on_delete=models.CASCADE)
-    meetingId = models.ForeignKey(Meeting, on_delete=models.CASCADE)
-    savingsAccountId = models.ForeignKey(SavingsAccount, on_delete=models.CASCADE)
+    groupId = models.ForeignKey(GroupForm, on_delete=models.CASCADE, db_column='groupId')
+    cycleId = models.ForeignKey(CycleMeeting, on_delete=models.CASCADE, db_column='cycleId')
+    meetingId = models.ForeignKey(Meeting, on_delete=models.CASCADE, db_column='meetingId')
+    savingsAccountId = models.ForeignKey(SavingsAccount, on_delete=models.CASCADE, db_column='savingsAccountId')
     
     def __str__(self):
         return self.groupId
 
 
 class GroupCycleStatus(models.Model):
-    group = models.ForeignKey(GroupProfile, on_delete=models.CASCADE)
-    cycleId = models.ForeignKey(CycleMeeting, on_delete=models.CASCADE)
+    group = models.ForeignKey(GroupProfile, on_delete=models.CASCADE, db_column='group')
+    cycleId = models.ForeignKey(CycleMeeting, on_delete=models.CASCADE, db_column='cycleId')
     is_cycle_started = models.BooleanField(default=False)
     
     def __str__(self):
         return self.group
 
 class Loans(models.Model):
-    member = models.ForeignKey(GroupMembers, on_delete=models.CASCADE)
+    member = models.ForeignKey(GroupMembers, on_delete=models.CASCADE, db_column='member')
     loan_applicant = models.TextField()
-    group = models.ForeignKey(GroupForm, on_delete=models.CASCADE)
+    group = models.ForeignKey(GroupForm, on_delete=models.CASCADE, db_column='group')
     loan_purpose = models.TextField()
     loan_amount = models.FloatField()
     interest_rate = models.FloatField()
@@ -336,10 +336,10 @@ class Loans(models.Model):
 
 
 class LoanDisbursement(models.Model):
-    member = models.ForeignKey(GroupMembers, on_delete=models.CASCADE)
-    group = models.ForeignKey(GroupForm, on_delete=models.CASCADE)
-    cycleId = models.ForeignKey(CycleMeeting, on_delete=models.CASCADE)
-    loan = models.ForeignKey(Loans, on_delete=models.CASCADE)
+    member = models.ForeignKey(GroupMembers, on_delete=models.CASCADE, db_column='member')
+    group = models.ForeignKey(GroupForm, on_delete=models.CASCADE, db_column='group')
+    cycleId = models.ForeignKey(CycleMeeting, on_delete=models.CASCADE, db_column='cycleId')
+    loan = models.ForeignKey(Loans, on_delete=models.CASCADE, db_column='loan')
     disbursement_amount = models.FloatField()
     disbursement_date = models.DateField()
     
@@ -348,9 +348,9 @@ class LoanDisbursement(models.Model):
 
 
 class LoanPayments(models.Model):
-    member = models.ForeignKey(GroupMembers, on_delete=models.CASCADE)
-    group = models.ForeignKey(GroupForm, on_delete=models.CASCADE)
-    loan = models.ForeignKey(Loans, on_delete=models.CASCADE)
+    member = models.ForeignKey(GroupMembers, on_delete=models.CASCADE, db_column='member')
+    group = models.ForeignKey(GroupForm, on_delete=models.CASCADE, db_column='group')
+    loan = models.ForeignKey(Loans, on_delete=models.CASCADE, db_column='loan')
     payment_amount = models.FloatField()
     payment_date = models.TextField()
     def __str__(self):
@@ -358,18 +358,18 @@ class LoanPayments(models.Model):
 
 
 class ShareOut(models.Model):
-    group = models.ForeignKey(GroupProfile, on_delete=models.CASCADE)
-    cycleId = models.ForeignKey(CycleMeeting, on_delete=models.CASCADE)
-    users = models.ForeignKey(Users, on_delete=models.CASCADE)
+    group = models.ForeignKey(GroupProfile, on_delete=models.CASCADE, db_column='group')
+    cycleId = models.ForeignKey(CycleMeeting, on_delete=models.CASCADE, db_column='cycleId')
+    users = models.ForeignKey(Users, on_delete=models.CASCADE, db_column='users')
     share_value = models.FloatField()
     def __str__(self):
         return self.group
 
 
 class ReversedTransactions(models.Model):
-    group = models.ForeignKey(GroupProfile, on_delete=models.CASCADE)
-    savings_account = models.ForeignKey(SavingsAccount, on_delete=models.CASCADE)
-    logged_in_users = models.ForeignKey(Users, on_delete=models.CASCADE)
+    group = models.ForeignKey(GroupProfile, on_delete=models.CASCADE, db_column='group')
+    savings_account = models.ForeignKey(SavingsAccount, on_delete=models.CASCADE, db_column='savings_account')
+    logged_in_users = models.ForeignKey(Users, on_delete=models.CASCADE, db_column='logged_in_users')
     reversed_amount = models.FloatField()
     date = models.TextField()
     purpose = models.TextField()

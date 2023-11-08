@@ -49,7 +49,7 @@ def payment_info_list(request):
                     'group_id': payment_info.group,
                     'cycle_id': payment_info.cycle,
                     'meeting_id': payment_info.meeting,
-                    'member_id': payment_info.meeting,
+                    'member_id': payment_info.member,
                     'payment_amount': payment_info.payment_amount,
                     'payment_date': payment_info.payment_date,
                 })
