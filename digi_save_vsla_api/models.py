@@ -200,7 +200,7 @@ class WelfareAccount(models.Model):
 
 class ActiveCycleMeeting(models.Model):
     
-    group = models.ForeignKey(GroupProfile, on_delete=models.CASCADE, db_column='group')
+    group = models.ForeignKey(GroupProfile, on_delete=models.CASCADE, db_column='group', null=True)
     cycleMeetingID = models.ForeignKey(CycleMeeting, on_delete=models.CASCADE, db_column='cycleMeetingID')
     
     def __str__(self):
