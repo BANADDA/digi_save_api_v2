@@ -90,7 +90,7 @@ class Positions(models.Model):
 class AssignedPositions(models.Model):
     position = models.IntegerField(default=None, blank=True, null=True)
     member = models.ForeignKey(GroupMembers, on_delete=models.CASCADE, db_column='member')
-    group = models.ForeignKey(GroupProfile, on_delete=models.CASCADE, db_column='group')
+    group = models.ForeignKey(GroupProfile, on_delete=models.CASCADE, db_column='group', default=None, null=True)
     
     def __str__(self):
         return self.position
