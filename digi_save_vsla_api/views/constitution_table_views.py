@@ -11,7 +11,7 @@ def constitution_table_list(request):
     data = request.data
     try:
         if request.method == 'POST':
-            group_id = data.get('group_id')
+            group = data.get('group_id')
             hasConstitution = data.get('hasConstitution')
             constitutionFiles = data.get('constitutionFiles')
             usesGroupShares = data.get('usesGroupShares')
@@ -28,7 +28,7 @@ def constitution_table_list(request):
             selectedCollateralRequirements = data.get('selectedCollateralRequirements')
 
             # Get the GroupProfile instance based on the group_id
-            group_profile = GroupProfile.objects.get(id=group_id)
+            group_profile = GroupProfile.objects.get(id=group)
 
             constitution = ConstitutionTable(
                 group=group_profile,

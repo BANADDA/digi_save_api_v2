@@ -29,10 +29,10 @@ def cycle_meeting_list(request):
             totalSocialFund = data.get('totalSocialFund')
             socialFundContributions = data.get('socialFundContributions')
             sharePurchases = data.get('sharePurchases')
-            group_id = data.get('group_id')
+            group = data.get('group_id')
 
             # Get the related group instance based on its ID
-            group = GroupForm.objects.get(id=group_id)
+            group = GroupForm.objects.get(id=group)
 
             cycle_meeting = CycleMeeting(
                 date=date,

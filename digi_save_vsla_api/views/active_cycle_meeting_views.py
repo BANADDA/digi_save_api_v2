@@ -11,15 +11,15 @@ def active_cycle_meeting_list(request):
     data = request.data
     try:
         if request.method == 'POST':
-            group_id = data.get('group_id')
+            group = data.get('group_id')
             cycleMeetingID = data.get('cycleMeetingID')
 
             # Get the GroupProfile instance based on the group_id
-            group_profile = GroupProfile.objects.get(id=group_id)
+            group_profile = GroupProfile.objects.get(id=group)
             cycleMeetingID = CycleMeeting.objects.get(id=cycleMeetingID)
 
             constitution = ActiveCycleMeeting(
-                group_id=group_profile,
+                group=group_profile,
                 cycleMeetingID=cycleMeetingID,
             )
             constitution.save()
@@ -34,7 +34,7 @@ def active_cycle_meeting_list(request):
             constitution_data = []
             for constitution in constitutions:
                 constitution_data.append({
-                    'group_id': constitution.group_id,
+                    'group_id': constitution.group,
                     'cycleMeetingID': constitution.cycleMeetingID,
                 })
             return JsonResponse({
