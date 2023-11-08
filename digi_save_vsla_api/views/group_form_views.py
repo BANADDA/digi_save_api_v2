@@ -13,29 +13,28 @@ def group_form_list(request):
 
     try:
         if request.method == 'POST':
-            group_profile_id = data.get('group_profile_id')
-            logged_in_users_id = data.get('logged_in_users_id')
-            constitution_id = data.get('constitution_id')
-            cycle_schedule_id = data.get('cycle_schedule_id')
-            group_member_id = data.get('group_member_id')
-            assigned_position_id = data.get('assigned_position_id')
+            group_profile = data.get('group_profile_id')
+            logged_in_users = data.get('logged_in_users_id')
+            constitution = data.get('constitution_id')
+            cycle_schedule = data.get('cycle_schedule_id')
+            group_member = data.get('group_member_id')
+            assigned_position = data.get('assigned_position_id')
 
             # Get the related instances based on their IDs
-            group_profile = GroupProfile.objects.get(id=group_profile_id)
-            logged_in_users = Users.objects.get(id=logged_in_users_id)
-            print('logged_in_users',logged_in_users)
-            constitution = ConstitutionTable.objects.get(id=constitution_id)
-            cycle_schedule = CycleSchedules.objects.get(id=cycle_schedule_id)
-            group_member = GroupMembers.objects.get(id=group_member_id)
+            group_profile_id = GroupProfile.objects.get(id=group_profile)
+            logged_in_users = Users.objects.get(id=logged_in_users)
+            constitution = ConstitutionTable.objects.get(id=constitution)
+            cycle_schedule = CycleSchedules.objects.get(id=cycle_schedule)
+            group_member = GroupMembers.objects.get(id=group_member)
             # assigned_position = AssignedPositions.objects.get(id=assigned_position_id)
 
             group_form = GroupForm(
-                group=group_profile,
-                logged_in_users_id=logged_in_users,
-                constitution_id=constitution,
-                cycle_schedule_id=cycle_schedule,
-                group_member_id=group_member,
-                assigned_position_id=assigned_position_id,
+                group=group_profile_id,
+                logged_in_users=logged_in_users,
+                constitution=constitution,
+                cycle_schedule=cycle_schedule,
+                group_member=group_member,
+                assigned_position=assigned_position,
             )
             group_form.save()
 
@@ -50,11 +49,11 @@ def group_form_list(request):
             for group_form in group_forms:
                 group_form_data.append({
                     'group_profile_id': group_form.group,
-                    'logged_in_users_id': group_form.logged_in_users_id,
-                    'constitution_id': group_form.constitution_id,
-                    'cycle_schedule_id': group_form.cycle_schedule_id,
-                    'group_member_id': group_form.group_member_id,
-                    'assigned_position_id': group_form.assigned_position_id,
+                    'logged_in_users_id': group_form.logged_in_users,
+                    'constitution_id': group_form.constitution,
+                    'cycle_schedule_id': group_form.cycle_schedule,
+                    'group_member_id': group_form.group_member,
+                    'assigned_position_id': group_form.assigned_position,
                 })
             return JsonResponse({
                 'status': 'success',

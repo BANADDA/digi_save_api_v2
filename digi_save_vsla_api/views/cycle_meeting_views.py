@@ -52,7 +52,7 @@ def cycle_meeting_list(request):
                 totalSocialFund=totalSocialFund,
                 socialFundContributions=socialFundContributions,
                 sharePurchases=sharePurchases,
-                group_id=group,
+                group=group,
             )
             cycle_meeting.save()
 
@@ -83,7 +83,7 @@ def cycle_meeting_list(request):
                     'totalSocialFund': cycle_meeting.totalSocialFund,
                     'socialFundContributions': cycle_meeting.socialFundContributions,
                     'sharePurchases': cycle_meeting.sharePurchases,
-                    'group_id': cycle_meeting.group_id,
+                    'group_id': cycle_meeting.group,
                 })
             return JsonResponse({
                 'status': 'success',

@@ -22,7 +22,7 @@ def group_fees_list(request):
 
             fee = GroupFees(
                 member=member,
-                group_id=group,
+                group=group,
                 registration_fee=registration_fee,
             )
             fee.save()
@@ -38,7 +38,7 @@ def group_fees_list(request):
             for fee in fees:
                 fee_data.append({
                     'member_id': fee.member,
-                    'group_id': fee.group_id,
+                    'group_id': fee.group,
                     'registration_fee': fee.registration_fee,
                 })
             return JsonResponse({

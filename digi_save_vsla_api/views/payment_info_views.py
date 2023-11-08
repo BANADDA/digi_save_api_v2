@@ -28,8 +28,8 @@ def payment_info_list(request):
 
             payment_info = PaymentInfo(
                 group=group,
-                cycle_id=cycle,
-                meeting_id=meeting,
+                cycle=cycle,
+                meeting=meeting,
                 member=member,
                 payment_amount=payment_amount,
                 payment_date=payment_date,
@@ -47,9 +47,9 @@ def payment_info_list(request):
             for payment_info in payment_info_list:
                 payment_info_data.append({
                     'group_id': payment_info.group,
-                    'cycle_id': payment_info.cycle_id,
-                    'meeting_id': payment_info.meeting_id,
-                    'member_id': payment_info.meeting_id,
+                    'cycle_id': payment_info.cycle,
+                    'meeting_id': payment_info.meeting,
+                    'member_id': payment_info.meeting,
                     'payment_amount': payment_info.payment_amount,
                     'payment_date': payment_info.payment_date,
                 })

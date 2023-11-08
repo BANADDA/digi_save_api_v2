@@ -38,8 +38,8 @@ def meeting_list(request):
             cycle = CycleMeeting.objects.get(id=cycle_id)
 
             meeting = Meeting(
-                group_id=group,
-                cycle_id=cycle,
+                group=group,
+                cycle=cycle,
                 date=date,
                 time=time,
                 endTime=endTime,
@@ -70,8 +70,8 @@ def meeting_list(request):
             meeting_data = []
             for meeting in meetings:
                 meeting_data.append({
-                    'group_id': meeting.group_id,
-                    'cycle_id': meeting.cycle_id,
+                    'group_id': meeting.group,
+                    'cycle_id': meeting.cycle,
                     'date': meeting.date,
                     'time': meeting.time,
                     'endTime': meeting.endTime,

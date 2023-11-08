@@ -24,8 +24,8 @@ def group_members_list(request):
 
 
             group_members = GroupMembers(
-                group_id=group_id,
-                user_id=user_id,
+                group=group_id,
+                user=user_id,
                 sync_flag=sync_flag,
             )
             group_members.save()
@@ -41,9 +41,8 @@ def group_members_list(request):
             group_member_data = []
             for group_member in groupMembers:
                 group_member_data.append({
-                    'group_id': group_member.group_id,
-                    'user_id': group_member.user_id,
-                    'sync_flag': group_member.sync_flag,
+                    'group_id': group_member.group,
+                    'user_id': group_member.user,
                 })
             return JsonResponse({
                 'status': 'success',

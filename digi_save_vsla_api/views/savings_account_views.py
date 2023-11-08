@@ -25,7 +25,7 @@ def savings_account_list(request):
             logged_in_users_id = Users.objects.get(id=logged_in_users_id)
 
             savings_account = SavingsAccount(
-                logged_in_users_id=logged_in_users_id,
+                logged_in_users=logged_in_users_id,
                 date=date,
                 purpose=purpose,
                 amount=amount,
@@ -43,7 +43,7 @@ def savings_account_list(request):
             savings_account_data = []
             for savings_account in savings_accounts:
                 savings_account_data.append({
-                    'logged_in_users_id': savings_account.logged_in_users_id,
+                    'logged_in_users_id': savings_account.logged_in_users,
                     'date': savings_account.date,
                     'purpose': savings_account.purpose,
                     'amount': savings_account.amount,

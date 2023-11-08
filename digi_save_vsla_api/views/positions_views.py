@@ -15,11 +15,9 @@ def positions_list(request):
             
             print("Received data:", data)
             name = data.get('name')
-            sync_flag = data.get('sync_flag')
 
             group_members = Positions(
-                name=name,
-                sync_flag=sync_flag,
+                name=name
             )
             group_members.save()
 
@@ -33,8 +31,7 @@ def positions_list(request):
             group_member_data = []
             for group_member in groupMembers:
                 group_member_data.append({
-                    'name': group_member.name,
-                    'sync_flag': group_member.sync_flag,
+                    'name': group_member.name
                 })
             return JsonResponse({
                 'status': 'success',

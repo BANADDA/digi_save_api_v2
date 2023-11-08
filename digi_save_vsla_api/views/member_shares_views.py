@@ -28,13 +28,13 @@ def member_shares_list(request):
             cycle_id = CycleMeeting.objects.get(id=cycle_id)
 
             member_shares = MemberShares(
-                logged_in_users_id=logged_in_users_id,
+                logged_in_users=logged_in_users_id,
                 date=date,
                 sharePurchases=sharePurchases,
                 meeting=meeting,
                 users=users,
-                group_id=group,
-                cycle_id=cycle_id,
+                group=group,
+                cycle=cycle_id,
             )
             member_shares.save()
 
@@ -48,13 +48,13 @@ def member_shares_list(request):
             member_shares_data = []
             for member_share in member_shares:
                 member_shares_data.append({
-                    'logged_in_users_id': member_share.logged_in_users_id,
+                    'logged_in_users_id': member_share.logged_in_users,
                     'date': member_share.date,
                     'sharePurchases': member_share.sharePurchases,
                     'meetingId': member_share.meeting,
                     'users_id': member_share.users,
-                    'group_id': member_share.group_id,
-                    'cycle_id': member_share.cycle_id,
+                    'group_id': member_share.group,
+                    'cycle_id': member_share.cycle,
                 })
             return JsonResponse({
                 'status': 'success',

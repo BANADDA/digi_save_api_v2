@@ -26,11 +26,11 @@ def welfare_account_list(request):
             cycle = CycleMeeting.objects.get(id=cycle_id)
 
             welfare_account = WelfareAccount(
-                logged_in_users_id=logged_in_users_id,
+                logged_in_users=logged_in_users_id,
                 amount=amount,
                 group=group,
-                meeting_id=meeting,
-                cycle_id=cycle,
+                meeting=meeting,
+                cycle=cycle,
             )
             welfare_account.save()
 
@@ -44,11 +44,11 @@ def welfare_account_list(request):
             welfare_account_data = []
             for welfare_account in welfare_accounts:
                 welfare_account_data.append({
-                    'logged_in_users_id': welfare_account.logged_in_users_id,
+                    'logged_in_users_id': welfare_account.logged_in_users,
                     'amount': welfare_account.amount,
-                    'group_id': welfare_account.group_id,
-                    'meeting_id': welfare_account.meeting_id,
-                    'cycle_id': welfare_account.cycle_id,
+                    'group_id': welfare_account.group,
+                    'meeting_id': welfare_account.meeting,
+                    'cycle_id': welfare_account.cycle,
                 })
             return JsonResponse({
                 'status': 'success',

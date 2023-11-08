@@ -30,8 +30,8 @@ def social_fund_applications_list(request):
             group_member = GroupMembers.objects.get(id=group_member_id)
 
             social_fund_application = SocialFundApplications(
-                group_id=group,
-                cycle_id=cycle,
+                group=group,
+                cycle=cycle,
                 meeting_id=meeting,
                 submission_date=submission_date,
                 applicant=applicant,
@@ -52,9 +52,9 @@ def social_fund_applications_list(request):
             social_fund_data = []
             for social_fund_application in social_fund_applications:
                 social_fund_data.append({
-                    'group_id': social_fund_application.group_id,
-                    'cycle_id': social_fund_application.cycle_id,
-                    'meeting_id': social_fund_application.meeting_id,
+                    'group_id': social_fund_application.group,
+                    'cycle_id': social_fund_application.cycle,
+                    'meeting_id': social_fund_application.meeting,
                     'submission_date': social_fund_application.submission_date,
                     'applicant': social_fund_application.applicant,
                     'group_member_id': social_fund_application.group_member,

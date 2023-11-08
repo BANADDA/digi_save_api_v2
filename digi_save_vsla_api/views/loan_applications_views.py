@@ -29,9 +29,9 @@ def loan_applications_list(request):
             group_member = GroupMembers.objects.get(id=group_member_id)
 
             loan_application = LoanApplications(
-                group_id=group,
-                cycle_id=cycle,
-                meeting_id=meeting,
+                group=group,
+                cycle=cycle,
+                meeting=meeting,
                 submission_date=submission_date,
                 loan_applicant=loan_applicant,
                 group_member=group_member,
@@ -51,9 +51,9 @@ def loan_applications_list(request):
             loan_application_data = []
             for loan_application in loan_applications:
                 loan_application_data.append({
-                    'group_id': loan_application.group_id,
-                    'cycle_id': loan_application.cycle_id,
-                    'meetingId': loan_application.meeting_id,
+                    'group_id': loan_application.group,
+                    'cycle_id': loan_application.cycle,
+                    'meetingId': loan_application.meeting,
                     'submission_date': loan_application.submission_date,
                     'loan_applicant': loan_application.loan_applicant,
                     'group_member_id': loan_application.group_member,

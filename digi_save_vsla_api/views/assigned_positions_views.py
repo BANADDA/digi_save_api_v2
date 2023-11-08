@@ -22,9 +22,9 @@ def assigned_positions_list(request):
             group = GroupProfile.objects.get(id=group_id)
 
             assigned_position = AssignedPositions(
-                position_id=position_id,
-                member_id=member,
-                group_id=group,
+                position=position_id,
+                member=member,
+                group=group,
             )
             assigned_position.save()
 
@@ -38,9 +38,9 @@ def assigned_positions_list(request):
             assigned_positions_data = []
             for assigned_position in assigned_positions:
                 assigned_positions_data.append({
-                    'position_id': assigned_position.position_id,
-                    'member_id': assigned_position.member_id,
-                    'group_id': assigned_position.group_id,
+                    'position_id': assigned_position.position,
+                    'member_id': assigned_position.member,
+                    'group_id': assigned_position.group,
                 })
             return JsonResponse({
                 'status': 'success',

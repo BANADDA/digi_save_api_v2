@@ -31,7 +31,7 @@ def constitution_table_list(request):
             group_profile = GroupProfile.objects.get(id=group_id)
 
             constitution = ConstitutionTable(
-                group_id=group_profile,
+                group=group_profile,
                 hasConstitution=hasConstitution,
                 constitutionFiles=constitutionFiles,
                 usesGroupShares=usesGroupShares,
@@ -59,7 +59,7 @@ def constitution_table_list(request):
             constitution_data = []
             for constitution in constitutions:
                 constitution_data.append({
-                    'group_id': constitution.group_id,
+                    'group_id': constitution.group,
                     'hasConstitution': constitution.hasConstitution,
                     'constitutionFiles': constitution.constitutionFiles,
                     'usesGroupShares': constitution.usesGroupShares,
