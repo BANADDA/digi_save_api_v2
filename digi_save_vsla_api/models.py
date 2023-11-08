@@ -290,7 +290,7 @@ class CycleStartMeeting(models.Model):
 class PaymentInfo(models.Model):
     group = models.ForeignKey(GroupForm, on_delete=models.CASCADE, db_column='group', default=None, null=True)
     cycle = models.ForeignKey(CycleMeeting, on_delete=models.CASCADE,  db_column='cycle', default=None, null=True)
-    meeting = models.ForeignKey(Meeting, on_delete=models.CASCADE,  db_column='meeting')
+    meeting = models.ForeignKey(Meeting, on_delete=models.CASCADE,  db_column='meeting', default=None, null=True)
     member = models.ForeignKey(GroupMembers, on_delete=models.CASCADE, db_column='member', default=None, null=True)
     payment_amount = models.FloatField()
     payment_date = models.TextField()
