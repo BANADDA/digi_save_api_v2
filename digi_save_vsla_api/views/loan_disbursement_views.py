@@ -45,10 +45,10 @@ def loan_disbursement_list(request):
             disbursement_data = []
             for disbursement in disbursements:
                 disbursement_data.append({
-                    'member_id': disbursement.member.id,
-                    'groupId': disbursement.group.id,
-                    'cycleId': disbursement.cycleId.id,
-                    'loan_id': disbursement.loan.id,
+                    'member_id': disbursement.member,
+                    'groupId': disbursement.group,
+                    'cycleId': disbursement.cycleId,
+                    'loan_id': disbursement.loan,
                     'disbursement_amount': disbursement.disbursement_amount,
                     'disbursement_date': disbursement.disbursement_date,
                 })

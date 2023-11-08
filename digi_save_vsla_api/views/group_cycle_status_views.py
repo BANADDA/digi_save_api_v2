@@ -37,8 +37,8 @@ def group_cycle_status_list(request):
             cycle_status_data = []
             for cycle_status in cycle_statuses:
                 cycle_status_data.append({
-                    'group_id': cycle_status.group.id,
-                    'cycleId': cycle_status.cycleId.id,
+                    'group_id': cycle_status.group,
+                    'cycleId': cycle_status.cycleId,
                     'is_cycle_started': cycle_status.is_cycle_started,
                 })
             return JsonResponse({

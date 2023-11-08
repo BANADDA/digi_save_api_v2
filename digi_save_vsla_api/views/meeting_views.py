@@ -70,8 +70,8 @@ def meeting_list(request):
             meeting_data = []
             for meeting in meetings:
                 meeting_data.append({
-                    'group_id': meeting.group_id.id,
-                    'cycle_id': meeting.cycle_id.id,
+                    'group_id': meeting.group_id,
+                    'cycle_id': meeting.cycle_id,
                     'date': meeting.date,
                     'time': meeting.time,
                     'endTime': meeting.endTime,

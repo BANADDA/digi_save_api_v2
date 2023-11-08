@@ -47,9 +47,9 @@ def reversed_transactions_list(request):
             reversed_transaction_data = []
             for reversed_transaction in reversed_transactions:
                 reversed_transaction_data.append({
-                    'group_id': reversed_transaction.group.id,
-                    'savings_account_id': reversed_transaction.savings_account.id,
-                    'logged_in_users_id': reversed_transaction.logged_in_users.id,
+                    'group_id': reversed_transaction.group,
+                    'savings_account_id': reversed_transaction.savings_account,
+                    'logged_in_users_id': reversed_transaction.logged_in_users,
                     'reversed_amount': reversed_transaction.reversed_amount,
                     'date': reversed_transaction.date,
                     'purpose': reversed_transaction.purpose,

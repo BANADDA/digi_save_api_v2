@@ -41,8 +41,8 @@ def group_members_list(request):
             group_member_data = []
             for group_member in groupMembers:
                 group_member_data.append({
-                    'group_id': group_member.group_id.id,
-                    'user_id': group_member.user_id.id,
+                    'group_id': group_member.group_id,
+                    'user_id': group_member.user_id,
                     'sync_flag': group_member.sync_flag,
                 })
             return JsonResponse({

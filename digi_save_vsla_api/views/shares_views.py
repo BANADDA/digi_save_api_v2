@@ -42,9 +42,9 @@ def shares_list(request):
             for share in shares_list:
                 shares_data.append({
                     'sharePurchases': share.sharePurchases,
-                    'meetingId': share.meetingId.id,
-                    'cycle_id': share.cycle_id.id,
-                    'group_id': share.group_id.id,
+                    'meetingId': share.meetingId,
+                    'cycle_id': share.cycle_id,
+                    'group_id': share.group_id,
                 })
             return JsonResponse({
                 'status': 'success',

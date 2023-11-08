@@ -42,9 +42,9 @@ def loan_payments_list(request):
             payment_data = []
             for payment in payments:
                 payment_data.append({
-                    'member_id': payment.member.id,
-                    'groupId': payment.group.id,
-                    'loan_id': payment.loan.id,
+                    'member_id': payment.member,
+                    'groupId': payment.group,
+                    'loan_id': payment.loan,
                     'payment_amount': payment.payment_amount,
                     'payment_date': payment.payment_date,
                 })

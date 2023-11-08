@@ -41,9 +41,9 @@ def share_out_list(request):
             share_out_data = []
             for share_out in share_out_list:
                 share_out_data.append({
-                    'group_id': share_out.group.id,
-                    'cycleId': share_out.cycleId.id,
-                    'users_id': share_out.users.id,
+                    'group_id': share_out.group,
+                    'cycleId': share_out.cycleId,
+                    'users_id': share_out.users,
                     'share_value': share_out.share_value,
                 })
             return JsonResponse({

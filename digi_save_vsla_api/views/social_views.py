@@ -36,7 +36,7 @@ def social_list(request):
             for social in social_list:
                 social_data.append({
                     'socialFund': social.socialFund,
-                    'meetingId': social.meetingId.id,
+                    'meetingId': social.meetingId,
                 })
             return JsonResponse({
                 'status': 'success',

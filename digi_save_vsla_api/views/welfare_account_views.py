@@ -44,11 +44,11 @@ def welfare_account_list(request):
             welfare_account_data = []
             for welfare_account in welfare_accounts:
                 welfare_account_data.append({
-                    'logged_in_users_id': welfare_account.logged_in_users_id.id,
+                    'logged_in_users_id': welfare_account.logged_in_users_id,
                     'amount': welfare_account.amount,
-                    'group_id': welfare_account.group_id.id,
-                    'meeting_id': welfare_account.meeting_id.id,
-                    'cycle_id': welfare_account.cycle_id.id,
+                    'group_id': welfare_account.group_id,
+                    'meeting_id': welfare_account.meeting_id,
+                    'cycle_id': welfare_account.cycle_id,
                 })
             return JsonResponse({
                 'status': 'success',

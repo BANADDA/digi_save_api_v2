@@ -43,11 +43,11 @@ def savings_account_list(request):
             savings_account_data = []
             for savings_account in savings_accounts:
                 savings_account_data.append({
-                    'logged_in_users_id': savings_account.logged_in_users_id.id,
+                    'logged_in_users_id': savings_account.logged_in_users_id,
                     'date': savings_account.date,
                     'purpose': savings_account.purpose,
                     'amount': savings_account.amount,
-                    'group_id': savings_account.group.id,
+                    'group_id': savings_account.group,
                 })
             return JsonResponse({
                 'status': 'success',

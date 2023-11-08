@@ -51,10 +51,10 @@ def member_shares_list(request):
                     'logged_in_users_id': member_share.logged_in_users_id,
                     'date': member_share.date,
                     'sharePurchases': member_share.sharePurchases,
-                    'meetingId': member_share.meeting.id,
-                    'users_id': member_share.users.id,
-                    'group_id': member_share.group_id.id,
-                    'cycle_id': member_share.cycle_id.id,
+                    'meetingId': member_share.meeting,
+                    'users_id': member_share.users,
+                    'group_id': member_share.group_id,
+                    'cycle_id': member_share.cycle_id,
                 })
             return JsonResponse({
                 'status': 'success',

@@ -39,8 +39,8 @@ def assigned_positions_list(request):
             for assigned_position in assigned_positions:
                 assigned_positions_data.append({
                     'position_id': assigned_position.position_id,
-                    'member_id': assigned_position.member_id.id,
-                    'group_id': assigned_position.group_id.id,
+                    'member_id': assigned_position.member_id,
+                    'group_id': assigned_position.group_id,
                 })
             return JsonResponse({
                 'status': 'success',

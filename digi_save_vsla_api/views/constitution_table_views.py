@@ -59,7 +59,7 @@ def constitution_table_list(request):
             constitution_data = []
             for constitution in constitutions:
                 constitution_data.append({
-                    'group_id': constitution.group_id.id,
+                    'group_id': constitution.group_id,
                     'hasConstitution': constitution.hasConstitution,
                     'constitutionFiles': constitution.constitutionFiles,
                     'usesGroupShares': constitution.usesGroupShares,

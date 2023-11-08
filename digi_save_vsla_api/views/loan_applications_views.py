@@ -51,12 +51,12 @@ def loan_applications_list(request):
             loan_application_data = []
             for loan_application in loan_applications:
                 loan_application_data.append({
-                    'group_id': loan_application.group_id.id,
-                    'cycle_id': loan_application.cycle_id.id,
-                    'meetingId': loan_application.meeting_id.id,
+                    'group_id': loan_application.group_id,
+                    'cycle_id': loan_application.cycle_id,
+                    'meetingId': loan_application.meeting_id,
                     'submission_date': loan_application.submission_date,
                     'loan_applicant': loan_application.loan_applicant,
-                    'group_member_id': loan_application.group_member.id,
+                    'group_member_id': loan_application.group_member,
                     'amount_needed': loan_application.amount_needed,
                     'loan_purpose': loan_application.loan_purpose,
                     'repayment_date': loan_application.repayment_date,

@@ -48,13 +48,13 @@ def fines_list(request):
             fine_data = []
             for fine in fines:
                 fine_data.append({
-                    'member_id': fine.memberId.id,
+                    'member_id': fine.memberId,
                     'amount': fine.amount,
                     'reason': fine.reason,
-                    'group_id': fine.groupId.id,
-                    'cycle_id': fine.cycleId.id,
-                    'meeting_id': fine.meetingId.id,
-                    'savings_account_id': fine.savingsAccountId.id,
+                    'group_id': fine.groupId,
+                    'cycle_id': fine.cycleId,
+                    'meeting_id': fine.meetingId,
+                    'savings_account_id': fine.savingsAccountId,
                 })
             return JsonResponse({
                 'status': 'success',

@@ -50,9 +50,9 @@ def loans_list(request):
             loan_data = []
             for loan in loans:
                 loan_data.append({
-                    'member_id': loan.member.id,
+                    'member_id': loan.member,
                     'loan_applicant': loan.loan_applicant,
-                    'groupId': loan.group.id,
+                    'groupId': loan.group,
                     'loan_purpose': loan.loan_purpose,
                     'loan_amount': loan.loan_amount,
                     'interest_rate': loan.interest_rate,

@@ -52,12 +52,12 @@ def social_fund_applications_list(request):
             social_fund_data = []
             for social_fund_application in social_fund_applications:
                 social_fund_data.append({
-                    'group_id': social_fund_application.group_id.id,
-                    'cycle_id': social_fund_application.cycle_id.id,
-                    'meeting_id': social_fund_application.meeting_id.id,
+                    'group_id': social_fund_application.group_id,
+                    'cycle_id': social_fund_application.cycle_id,
+                    'meeting_id': social_fund_application.meeting_id,
                     'submission_date': social_fund_application.submission_date,
                     'applicant': social_fund_application.applicant,
-                    'group_member_id': social_fund_application.group_member.id,
+                    'group_member_id': social_fund_application.group_member,
                     'amount_needed': social_fund_application.amount_needed,
                     'social_purpose': social_fund_application.social_purpose,
                     'repayment_date': social_fund_application.repayment_date,
