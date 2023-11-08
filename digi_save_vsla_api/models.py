@@ -231,8 +231,8 @@ class GroupLink(models.Model):
     group_image_path = models.TextField()
     constitution = models.ForeignKey(ConstitutionTable, on_delete=models.CASCADE, db_column='constitution', default=None, null=True)
     cycle_schedule = models.ForeignKey(CycleSchedules, on_delete=models.CASCADE, db_column='cycle_schedule', default=None, null=True)
-    group_members = models.ForeignKey(GroupMembers, on_delete=models.CASCADE, db_column='group_members')
-    assigned_positions = models.ForeignKey(AssignedPositions, on_delete=models.CASCADE, db_column='assigned_positions')
+    group_members = models.ForeignKey(GroupMembers, on_delete=models.CASCADE, db_column='group_members', default=None, null=True)
+    assigned_positions = models.ForeignKey(AssignedPositions, on_delete=models.CASCADE, db_column='assigned_positions', default=None, null=True)
     
     def __str__(self):
         return self.group_name
