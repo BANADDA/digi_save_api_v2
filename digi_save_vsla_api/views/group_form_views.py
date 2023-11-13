@@ -15,7 +15,7 @@ def group_form_list(request):
         if request.method == 'POST':
             group_profile_id = data.get('group_profile_id')
             group_id = data.get('group_id')
-            logged_in_users_id = data.get('logged_in_users_id')
+            logged_in_users_id = data.get('logged_in_user_id')
             constitution_id = data.get('constitution_id')
             cycle_schedule_id = data.get('cycle_schedule_id')
             group_member_id = data.get('group_member_id')

@@ -38,7 +38,7 @@ def active_cycle_meeting_list(request):
             for active_cycle_meeting in active_cycle_meetings:
                 data = {
                     'group_id': active_cycle_meeting.group_id,
-                    'cycle_meeting_id': active_cycle_meeting.cycleMeetingID
+                    'cycleMeetingID': active_cycle_meeting.cycleMeetingID
                     # Exclude 'id' field
                 }
                 # Add the serialized data to the dictionary using the table name as the key
