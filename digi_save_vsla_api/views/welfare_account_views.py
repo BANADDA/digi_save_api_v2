@@ -8,52 +8,55 @@ from django.http import JsonResponse
 
 @api_view(['GET', 'POST'])
 def welfare_account_list(request):
-    print("Received data:", request.data)
     data = request.data
-
+    print("Received data:", data.get('group_id'))
     try:
         if request.method == 'POST':
-            logged_in_users_id = data.get('logged_in_users_id')
+            logged_in_users_id = data.get('logged_in_user_id')
             amount = data.get('amount')
             group_id = data.get('group_id')
             meeting_id = data.get('meeting_id')
             cycle_id = data.get('cycle_id')
-
-            # Get the related instances based on their IDs
-            group = GroupForm.objects.get(id=group_id)
-            logged_in_users_id = Users.objects.get(id=logged_in_users_id)
-            meeting = Meeting.objects.get(id=meeting_id)
-            cycle = CycleMeeting.objects.get(id=cycle_id)
+            sync_flag = data.get('sync_flag')
 
             welfare_account = WelfareAccount(
-                logged_in_users=logged_in_users_id,
+                logged_in_users_id=logged_in_users_id,
                 amount=amount,
-                group=group,
-                meeting=meeting,
-                cycle=cycle,
+                group_id=group_id,
+                meeting_id=meeting_id,
+                cycle_id=cycle_id,
+                sync_flag=sync_flag,
             )
             welfare_account.save()
 
             return JsonResponse({
                 'status': 'success',
-                'message': 'Welfare account created successfully',
+                'message': 'Welfare Account created successfully',
             })
 
         if request.method == 'GET':
-            welfare_accounts = WelfareAccount.objects.all()
-            welfare_account_data = []
-            for welfare_account in welfare_accounts:
-                welfare_account_data.append({
-                    'logged_in_users_id': welfare_account.logged_in_users,
+            # Get all WelfareAccount objects
+            welfare_account_list = WelfareAccount.objects.all()
+
+            # Create a list to store the serialized data
+            serialized_data = {}
+
+            # Serialize each WelfareAccount object excluding 'id' field
+            for welfare_account in welfare_account_list:
+                data = {
+                    'logged_in_user_id': welfare_account.logged_in_users_id,
                     'amount': welfare_account.amount,
-                    'group_id': welfare_account.group,
-                    'meeting_id': welfare_account.meeting,
-                    'cycle_id': welfare_account.cycle,
-                })
-            return JsonResponse({
-                'status': 'success',
-                'welfare_accounts': welfare_account_data,
-            })
+                    'group_id': welfare_account.group_id,
+                    'meeting_id': welfare_account.meeting_id,
+                    'cycle_id': welfare_account.cycle_id,
+                    'sync_flag': welfare_account.sync_flag,
+                    # Exclude 'id' field
+                }
+                # Add the serialized data to the dictionary using the table name as the key
+                serialized_data['welfare_account'] = serialized_data.get('welfare_account', []) + [data]
+
+            # Return the serialized data as JSON
+            return JsonResponse(serialized_data, safe=False)
 
     except Exception as e:
         return JsonResponse({

@@ -7,40 +7,45 @@ from digi_save_vsla_api.serializers import ActiveCycleMeetingSerializer
 
 @api_view(['GET', 'POST'])
 def active_cycle_meeting_list(request):
-    print("Received data:", request.data)
     data = request.data
+    print("Received data:", data.get('group_id'))
     try:
         if request.method == 'POST':
-            group = data.get('group_id')
-            cycleMeetingID = data.get('cycleMeetingID')
+            group_id = data.get('group_id')
+            cycle_meeting_id = data.get('cycle_meeting_id')
+            sync_flag = data.get('sync_flag')
 
-            # Get the GroupProfile instance based on the group_id
-            group_profile = GroupProfile.objects.get(id=group)
-            cycleMeetingID = CycleMeeting.objects.get(id=cycleMeetingID)
-
-            constitution = ActiveCycleMeeting(
-                group=group_profile,
-                cycleMeetingID=cycleMeetingID,
+            active_cycle_meeting = ActiveCycleMeeting(
+                group_id=group_id,
+                cycleMeetingID=cycle_meeting_id,
+                sync_flag=sync_flag,
             )
-            constitution.save()
+            active_cycle_meeting.save()
 
             return JsonResponse({
                 'status': 'success',
-                'message': 'ActiveCycleMeeting created successfully',
+                'message': 'Active Cycle Meeting created successfully',
             })
 
         if request.method == 'GET':
-            constitutions = ActiveCycleMeeting.objects.all()
-            constitution_data = []
-            for constitution in constitutions:
-                constitution_data.append({
-                    'group_id': constitution.group,
-                    'cycleMeetingID': constitution.cycleMeetingID,
-                })
-            return JsonResponse({
-                'status': 'success',
-                'constitutions': constitution_data,
-            })
+            # Get all ActiveCycleMeeting objects
+            active_cycle_meetings = ActiveCycleMeeting.objects.all()
+
+            # Create a list to store the serialized data
+            serialized_data = {}
+
+            # Serialize each ActiveCycleMeeting object excluding 'id' field
+            for active_cycle_meeting in active_cycle_meetings:
+                data = {
+                    'group_id': active_cycle_meeting.group_id,
+                    'cycle_meeting_id': active_cycle_meeting.cycleMeetingID
+                    # Exclude 'id' field
+                }
+                # Add the serialized data to the dictionary using the table name as the key
+                serialized_data['ActiveCycleMeeting'] = serialized_data.get('ActiveCycleMeeting', []) + [data]
+
+            # Return the serialized data as JSON
+            return JsonResponse(serialized_data, safe=False)
 
     except Exception as e:
         return JsonResponse({

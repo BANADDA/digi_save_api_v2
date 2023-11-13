@@ -8,9 +8,8 @@ from django.http import JsonResponse
 
 @api_view(['GET', 'POST'])
 def social_fund_applications_list(request):
-    print("Received data:", request.data)
     data = request.data
-
+    print("Received data:", data.get('group_id'))
     try:
         if request.method == 'POST':
             group_id = data.get('group_id')
@@ -22,56 +21,60 @@ def social_fund_applications_list(request):
             amount_needed = data.get('amount_needed')
             social_purpose = data.get('social_purpose')
             repayment_date = data.get('repayment_date')
-
-            # Get the related instances based on their IDs
-            group = GroupForm.objects.get(id=group_id)
-            cycle = CycleMeeting.objects.get(id=cycle_id)
-            meeting = Meeting.objects.get(id=meeting_id)
-            group_member = GroupMembers.objects.get(id=group_member_id)
+            sync_flag = data.get('sync_flag')
 
             social_fund_application = SocialFundApplications(
-                group=group,
-                cycle=cycle,
-                meeting_id=meeting,
+                group_id=group_id,
+                cycle_id=cycle_id,
+                meeting_id=meeting_id,
                 submission_date=submission_date,
                 applicant=applicant,
-                group_member=group_member,
+                group_member=group_member_id,
                 amount_needed=amount_needed,
                 social_purpose=social_purpose,
                 repayment_date=repayment_date,
+                sync_flag=sync_flag,
             )
             social_fund_application.save()
 
             return JsonResponse({
                 'status': 'success',
-                'message': 'Social Fund application created successfully',
+                'message': 'Social Fund Application created successfully',
             })
 
         if request.method == 'GET':
-            social_fund_applications = SocialFundApplications.objects.all()
-            social_fund_data = []
-            for social_fund_application in social_fund_applications:
-                social_fund_data.append({
-                    'group_id': social_fund_application.group,
-                    'cycle_id': social_fund_application.cycle,
-                    'meeting_id': social_fund_application.meeting,
+            # Get all SocialFundApplications objects
+            social_fund_applications_list = SocialFundApplications.objects.all()
+
+            # Create a list to store the serialized data
+            serialized_data = {}
+
+            # Serialize each SocialFundApplications object excluding 'id' field
+            for social_fund_application in social_fund_applications_list:
+                data = {
+                    'group_id': social_fund_application.group_id,
+                    'cycle_id': social_fund_application.cycle_id,
+                    'meeting_id': social_fund_application.meeting_id,
                     'submission_date': social_fund_application.submission_date,
                     'applicant': social_fund_application.applicant,
                     'group_member_id': social_fund_application.group_member,
                     'amount_needed': social_fund_application.amount_needed,
                     'social_purpose': social_fund_application.social_purpose,
                     'repayment_date': social_fund_application.repayment_date,
-                })
-            return JsonResponse({
-                'status': 'success',
-                'social_fund_applications': social_fund_data,
-            })
+                    # Exclude 'id' field
+                }
+                # Add the serialized data to the dictionary using the table name as the key
+                serialized_data['social_fund_applications'] = serialized_data.get('social_fund_applications', []) + [data]
+
+            # Return the serialized data as JSON
+            return JsonResponse(serialized_data, safe=False)
 
     except Exception as e:
         return JsonResponse({
             'status': 'error',
             'message': str(e),
         }, status=500)
+
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def social_fund_applications_detail(request, pk):

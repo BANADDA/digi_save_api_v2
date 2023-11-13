@@ -8,9 +8,8 @@ from django.http import JsonResponse
 
 @api_view(['GET', 'POST'])
 def payment_info_list(request):
-    print("Received data:", request.data)
     data = request.data
-
+    print("Received data:", data.get('group_id'))
     try:
         if request.method == 'POST':
             group_id = data.get('group_id')
@@ -19,50 +18,54 @@ def payment_info_list(request):
             member_id = data.get('member_id')
             payment_amount = data.get('payment_amount')
             payment_date = data.get('payment_date')
-
-            # Get the related instances based on their IDs
-            group = GroupForm.objects.get(id=group_id)
-            cycle = CycleMeeting.objects.get(id=cycle_id)
-            meeting = Meeting.objects.get(id=meeting_id)
-            member = GroupMembers.objects.get(id=member_id)
+            sync_flag = data.get('sync_flag')
 
             payment_info = PaymentInfo(
-                group=group,
-                cycle=cycle,
-                meeting=meeting,
-                member=member,
+                group=group_id,
+                cycle_id=cycle_id,
+                meeting_id=meeting_id,
                 payment_amount=payment_amount,
+                member_id=member_id,
                 payment_date=payment_date,
+                sync_flag=sync_flag,
             )
             payment_info.save()
 
             return JsonResponse({
                 'status': 'success',
-                'message': 'Payment information created successfully',
+                'message': 'Payment Info created successfully',
             })
 
         if request.method == 'GET':
+            # Get all PaymentInfo objects
             payment_info_list = PaymentInfo.objects.all()
-            payment_info_data = []
+
+            # Create a list to store the serialized data
+            serialized_data = {}
+
+            # Serialize each PaymentInfo object excluding 'id' field
             for payment_info in payment_info_list:
-                payment_info_data.append({
+                data = {
                     'group_id': payment_info.group,
-                    'cycle_id': payment_info.cycle,
-                    'meeting_id': payment_info.meeting,
-                    'member_id': payment_info.member,
+                    'cycle_id': payment_info.cycle_id,
+                    'meeting_id': payment_info.meeting_id,
                     'payment_amount': payment_info.payment_amount,
+                    'member_id':payment_info.meeting_id,
                     'payment_date': payment_info.payment_date,
-                })
-            return JsonResponse({
-                'status': 'success',
-                'payment_info_list': payment_info_data,
-            })
+                    # Exclude 'id' field
+                }
+                # Add the serialized data to the dictionary using the table name as the key
+                serialized_data['payment_info'] = serialized_data.get('payment_info', []) + [data]
+
+            # Return the serialized data as JSON
+            return JsonResponse(serialized_data, safe=False)
 
     except Exception as e:
         return JsonResponse({
             'status': 'error',
             'message': str(e),
         }, status=500)
+
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def payment_info_detail(request, pk):

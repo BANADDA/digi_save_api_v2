@@ -15,9 +15,13 @@ def positions_list(request):
             
             print("Received data:", data)
             name = data.get('name')
+            position_id = data.get('id')
+            sync_flag = data.get('sync_flag')
 
             group_members = Positions(
-                name=name
+                name=name,
+                position_id=position_id,
+                sync_flag=sync_flag,
             )
             group_members.save()
 
@@ -27,16 +31,24 @@ def positions_list(request):
             })
 
         if request.method == 'GET':
-            groupMembers = Positions.objects.all()
-            group_member_data = []
-            for group_member in groupMembers:
-                group_member_data.append({
-                    'name': group_member.name
-                })
-            return JsonResponse({
-                'status': 'success',
-                'CycleSchedules': group_member_data,
-            })
+            # Get all Positions objects
+            positions = Positions.objects.all()
+
+            # Create a list to store the serialized data
+            serialized_data = {}
+
+        # Serialize each Positions object excluding 'id' and 'sync_flag'
+        for position in positions:
+            data = {
+                'name': position.name,
+                # Exclude 'id' and 'sync_flag' fields
+            }
+
+            # Add the serialized data to the dictionary using the table name as the key
+            serialized_data['positions'] = serialized_data.get('positions', []) + [data]
+
+        # Return the serialized data as JSON
+        return JsonResponse(serialized_data, safe=False)
 
     except Exception as e:
         return JsonResponse({

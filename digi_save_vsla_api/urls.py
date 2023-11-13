@@ -9,7 +9,6 @@ from digi_save_vsla_api.views.fines_views import fines_detail, fines_list
 from digi_save_vsla_api.views.group_cycle_status_views import group_cycle_status_detail, group_cycle_status_list
 from digi_save_vsla_api.views.group_fees_views import group_fees_detail, group_fees_list
 from digi_save_vsla_api.views.group_form_views import group_form_detail, group_form_list
-from digi_save_vsla_api.views.group_link_views import group_link_detail, group_link_list
 from digi_save_vsla_api.views.group_members_views import group_members_detail, group_members_list
 
 from digi_save_vsla_api.views.group_profile_views import group_profile_detail, group_profile_list
@@ -100,10 +99,6 @@ urlpatterns = [
     # Social views
     path('social/', social_list, name='social_list'),
     path('social/<int:pk>/', social_detail, name='social_detail'),
-
-    # GroupLink views
-    path('group_links/', group_link_list, name='group_link_list'),
-    path('group_links/<int:pk>/', group_link_detail, name='group_link_detail'),
 
     # LoanApplications views
     path('loan_applications/', loan_applications_list, name='loan_applications_list'),

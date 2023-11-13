@@ -1,6 +1,6 @@
 # serializers.py
 from rest_framework import serializers
-from .models import ActiveCycleMeeting, AssignedPositions, ConstitutionTable, CycleMeeting, CycleSchedules, CycleStartMeeting, Fines, GroupCycleStatus, GroupFees, GroupForm, GroupLink, GroupMembers, GroupProfile, LoanApplications, LoanDisbursement, LoanPayments, Loans, Meeting, MemberShares, PaymentInfo, Positions, ReversedTransactions, SavingsAccount, ShareOut, Shares, Social, SocialFundApplications, Users, WelfareAccount
+from .models import *
 
 class GroupFormSerializer(serializers.ModelSerializer):
     class Meta:
@@ -92,11 +92,6 @@ class SharesSerializer(serializers.ModelSerializer):
 class SocialSerializer(serializers.ModelSerializer):
     class Meta:
         model = Social
-        fields = '__all__'
-        
-class GroupLinkSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = GroupLink
         fields = '__all__'
         
 class LoanApplicationsSerializer(serializers.ModelSerializer):

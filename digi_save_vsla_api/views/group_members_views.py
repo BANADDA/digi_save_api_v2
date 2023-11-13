@@ -14,18 +14,20 @@ def group_members_list(request):
         if request.method == 'POST':
             
             print("Received data:", data)
+            member_id = data.get('id')
             group_id = data.get('group_id')
             user_id = data.get('user_id')
             sync_flag = data.get('sync_flag')
 
             #  # Get the GroupProfile instance based on the group_id
-            group_id = GroupProfile.objects.get(id=group_id)
-            user_id = Users.objects.get(id=user_id)
+            # group_id = GroupProfile.objects.get(profile_id=group_id)
+            # user_id = Users.objects.get(users_id=user_id)
 
 
             group_members = GroupMembers(
-                group=group_id,
-                user=user_id,
+                member_id=member_id,
+                group_id=group_id,
+                user_id=user_id,
                 sync_flag=sync_flag,
             )
             group_members.save()
@@ -36,19 +38,26 @@ def group_members_list(request):
             })
 
         if request.method == 'GET':
-            groupMembers = GroupMembers.objects.all()
-            print('Group members: ', groupMembers)
-            group_member_data = []
-            for group_member in groupMembers:
-                group_member_data.append({
-                    'group_id': group_member.group,
-                    'user_id': group_member.user,
-                })
-            return JsonResponse({
-                'status': 'success',
-                'groupMembers': group_member_data,
-            })
+           if request.method == 'GET':
+            # Get all GroupMembers objects
+            group_members = GroupMembers.objects.all()
 
+            # Create a list to store the serialized data
+            serialized_data = {}
+
+        # Serialize each GroupMembers object excluding 'id' and 'sync_flag'
+        for group_members in group_members:
+            data = {
+                'user_id': group_members.user_id,  # assuming you want the user_id's id
+                'group_id': group_members.group_id,  # assuming you want the group_id's id
+                # Exclude 'id' and 'sync_flag' fields
+            }
+             # Add the serialized data to the dictionary using the table name as the key
+            serialized_data['group_members'] = serialized_data.get('group_members', []) + [data]
+
+        # Return the serialized data as JSON
+        return JsonResponse(serialized_data, safe=False)
+    
     except Exception as e:
         return JsonResponse({
             'status': 'error',

@@ -8,55 +8,52 @@ from django.http import JsonResponse
 
 @api_view(['GET', 'POST'])
 def meeting_list(request):
-    print("Received data:", request.data)
     data = request.data
-
+    print("Received data:", data.get('group_id'))
     try:
         if request.method == 'POST':
-            group_id = data.get('group_id')
-            cycle_id = data.get('cycle_id')
             date = data.get('date')
             time = data.get('time')
-            endTime = data.get('endTime')
+            end_time = data.get('endTime')
             location = data.get('location')
             facilitator = data.get('facilitator')
-            meetingPurpose = data.get('meetingPurpose')
+            meeting_purpose = data.get('meetingPurpose')
             latitude = data.get('latitude')
             longitude = data.get('longitude')
             address = data.get('address')
             objectives = data.get('objectives')
-            attendanceData = data.get('attendanceData')
-            representativeData = data.get('representativeData')
+            attendance_data = data.get('attendanceData')
+            representative_data = data.get('representativeData')
             proposals = data.get('proposals')
-            socialFundContributions = data.get('socialFundContributions')
-            sharePurchases = data.get('sharePurchases')
-            totalLoanFund = data.get('totalLoanFund')
-            totalSocialFund = data.get('totalSocialFund')
-
-            # Get the related instances based on their IDs
-            group = GroupForm.objects.get(id=group_id)
-            cycle = CycleMeeting.objects.get(id=cycle_id)
+            social_fund_contributions = data.get('socialFundContributions')
+            share_purchases = data.get('sharePurchases')
+            total_loan_fund = data.get('totalLoanFund')
+            total_social_fund = data.get('totalSocialFund')
+            sync_flag = data.get('sync_flag')
+            group_id = data.get('group_id')
+            cycle_id = data.get('cycle_id')
 
             meeting = Meeting(
-                group=group,
-                cycle=cycle,
                 date=date,
                 time=time,
-                endTime=endTime,
+                end_time=end_time,
                 location=location,
                 facilitator=facilitator,
-                meetingPurpose=meetingPurpose,
+                meetingPurpose=meeting_purpose,
                 latitude=latitude,
                 longitude=longitude,
                 address=address,
                 objectives=objectives,
-                attendanceData=attendanceData,
-                representativeData=representativeData,
+                attendanceData=attendance_data,
+                representativeData=representative_data,
                 proposals=proposals,
-                socialFundContributions=socialFundContributions,
-                sharePurchases=sharePurchases,
-                totalLoanFund=totalLoanFund,
-                totalSocialFund=totalSocialFund,
+                socialFundContributions=social_fund_contributions,
+                sharePurchases=share_purchases,
+                totalLoanFund=total_loan_fund,
+                totalSocialFund=total_social_fund,
+                sync_flag=sync_flag,
+                group_id=group_id,
+                cycle_id=cycle_id,
             )
             meeting.save()
 
@@ -66,12 +63,15 @@ def meeting_list(request):
             })
 
         if request.method == 'GET':
-            meetings = Meeting.objects.all()
-            meeting_data = []
-            for meeting in meetings:
-                meeting_data.append({
-                    'group_id': meeting.group,
-                    'cycle_id': meeting.cycle,
+            # Get all Meeting objects
+            meeting_list = Meeting.objects.all()
+
+            # Create a list to store the serialized data
+            serialized_data = {}
+
+            # Serialize each Meeting object excluding 'id' field
+            for meeting in meeting_list:
+                data = {
                     'date': meeting.date,
                     'time': meeting.time,
                     'endTime': meeting.endTime,
@@ -89,11 +89,15 @@ def meeting_list(request):
                     'sharePurchases': meeting.sharePurchases,
                     'totalLoanFund': meeting.totalLoanFund,
                     'totalSocialFund': meeting.totalSocialFund,
-                })
-            return JsonResponse({
-                'status': 'success',
-                'meetings': meeting_data,
-            })
+                    'group_id': meeting.group_id,
+                    'cycle_id': meeting.cycle_id,
+                    # Exclude 'id' field
+                }
+                # Add the serialized data to the dictionary using the table name as the key
+                serialized_data['meeting'] = serialized_data.get('meeting', []) + [data]
+
+            # Return the serialized data as JSON
+            return JsonResponse(serialized_data, safe=False)
 
     except Exception as e:
         return JsonResponse({

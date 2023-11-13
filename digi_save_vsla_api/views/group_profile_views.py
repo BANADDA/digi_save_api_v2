@@ -14,6 +14,7 @@ def group_profile_list(request):
         if request.method == 'POST':
             
             print("Received data:", data)
+            profile_id = data.get('id')
             groupName = data.get('groupName')
             countryOfOrigin = data.get('countryOfOrigin')
             meetingLocation = data.get('meetingLocation')
@@ -28,6 +29,7 @@ def group_profile_list(request):
             socialFund = data.get('socialFund')
 
             group_profile = GroupProfile(
+                profile_id=profile_id,
                 groupName=groupName,
                 countryOfOrigin=countryOfOrigin,
                 meetingLocation=meetingLocation,
@@ -49,27 +51,39 @@ def group_profile_list(request):
             })
 
         if request.method == 'GET':
+            # Get all GroupProfile objects
             group_profiles = GroupProfile.objects.all()
-            group_profile_data = []
-            for group_profile in group_profiles:
-                group_profile_data.append({
-                    'groupName': group_profile.groupName,
-                    'countryOfOrigin': group_profile.countryOfOrigin,
-                    'meetingLocation': group_profile.meetingLocation,
-                    'groupStatus': group_profile.groupStatus,
-                    'groupLogoPath': group_profile.groupLogoPath,
-                    'partnerID': group_profile.partnerID,
-                    'workingWithPartner': group_profile.workingWithPartner,
-                    'isWorkingWithPartner': group_profile.isWorkingWithPartner,
-                    'numberOfCycles': group_profile.numberOfCycles,
-                    'numberOfMeetings': group_profile.numberOfMeetings,
-                    'loanFund': group_profile.loanFund,
-                    'socialFund': group_profile.socialFund,
-                })
-            return JsonResponse({
-                'status': 'success',
-                'group_profiles': group_profile_data,
-            })
+
+            # Create a dictionary to store the serialized data
+            serialized_data = {}
+
+        # Serialize each GroupProfile object excluding 'id' and 'sync_flag'
+        for group_profile in group_profiles:
+            data = {
+                'groupName': group_profile.groupName,
+                'countryOfOrigin': group_profile.countryOfOrigin,
+                'meetingLocation': group_profile.meetingLocation,
+                'groupStatus': group_profile.groupStatus,
+                'groupLogoPath': group_profile.groupLogoPath,
+                'partnerID': group_profile.partnerID,
+                'workingWithPartner': group_profile.workingWithPartner,
+                'isWorkingWithPartner': group_profile.isWorkingWithPartner,
+                'numberOfCycles': group_profile.numberOfCycles,
+                'numberOfMeetings': group_profile.numberOfMeetings,
+                'loanFund': group_profile.loanFund,
+                'socialFund': group_profile.socialFund,
+                # Exclude 'id' and 'sync_flag' fields
+            }
+
+            # Add the serialized data to the dictionary using the table name as the key
+            serialized_data['group_profile'] = serialized_data.get('group_profile', []) + [data]
+
+        # Return the serialized data as JSON
+        return JsonResponse(serialized_data, safe=False)
+
+
+    # # Handle other HTTP methods if needed
+    # return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
     except Exception as e:
         return JsonResponse({

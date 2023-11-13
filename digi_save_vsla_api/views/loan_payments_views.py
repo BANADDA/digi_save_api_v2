@@ -7,51 +7,54 @@ from digi_save_vsla_api.serializers import LoanPaymentsSerializer
 
 @api_view(['GET', 'POST'])
 def loan_payments_list(request):
-    print("Received data:", request.data)
     data = request.data
-
+    print("Received data:", data.get('groupId'))
     try:
         if request.method == 'POST':
-            member_id = data.get('member_id')
-            group_id = data.get('groupId')
-            loan_id = data.get('loan_id')
+            member = data.get('member_id')
+            group = data.get('groupId')
+            loan = data.get('loan_id')
             payment_amount = data.get('payment_amount')
             payment_date = data.get('payment_date')
+            sync_flag = data.get('sync_flag')
 
-            # Get the related instances based on their IDs
-            member = GroupMembers.objects.get(id=member_id)
-            group = GroupForm.objects.get(id=group_id)
-            loan = Loans.objects.get(id=loan_id)
-
-            payment = LoanPayments(
+            loan_payment = LoanPayments(
                 member=member,
                 group=group,
                 loan=loan,
                 payment_amount=payment_amount,
                 payment_date=payment_date,
+                sync_flag=sync_flag,
             )
-            payment.save()
+            loan_payment.save()
 
             return JsonResponse({
                 'status': 'success',
-                'message': 'Loan payment created successfully',
+                'message': 'Loan Payment created successfully',
             })
 
         if request.method == 'GET':
-            payments = LoanPayments.objects.all()
-            payment_data = []
-            for payment in payments:
-                payment_data.append({
-                    'member_id': payment.member,
-                    'groupId': payment.group,
-                    'loan_id': payment.loan,
-                    'payment_amount': payment.payment_amount,
-                    'payment_date': payment.payment_date,
-                })
-            return JsonResponse({
-                'status': 'success',
-                'loan_payments': payment_data,
-            })
+            # Get all LoanPayments objects
+            loan_payments_list = LoanPayments.objects.all()
+
+            # Create a list to store the serialized data
+            serialized_data = {}
+
+            # Serialize each LoanPayments object excluding 'id' field
+            for loan_payment in loan_payments_list:
+                data = {
+                    'member_id': loan_payment.member,
+                    'groupId': loan_payment.group,
+                    'loan_id': loan_payment.loan,
+                    'payment_amount': loan_payment.payment_amount,
+                    'payment_date': loan_payment.payment_date,
+                    # Exclude 'id' field
+                }
+                # Add the serialized data to the dictionary using the table name as the key
+                serialized_data['loan_payments'] = serialized_data.get('loan_payments', []) + [data]
+
+            # Return the serialized data as JSON
+            return JsonResponse(serialized_data, safe=False)
 
     except Exception as e:
         return JsonResponse({

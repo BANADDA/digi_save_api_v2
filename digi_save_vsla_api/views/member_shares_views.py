@@ -8,65 +8,66 @@ from django.http import JsonResponse
 
 @api_view(['GET', 'POST'])
 def member_shares_list(request):
-    print("Received data:", request.data)
     data = request.data
-
+    print("Received data:", data.get('group_id'))
     try:
         if request.method == 'POST':
-            logged_in_users_id = data.get('logged_in_users_id')
+            logged_in_users_id = data.get('logged_in_user_id')
             date = data.get('date')
-            sharePurchases = data.get('sharePurchases')
+            share_purchases = data.get('sharePurchases')
             meeting_id = data.get('meetingId')
-            users_id = data.get('users_id')
+            users_id = data.get('logged_in_user_id')
             group_id = data.get('group_id')
             cycle_id = data.get('cycle_id')
-
-            # Get the related instances based on their IDs
-            meeting = Meeting.objects.get(id=meeting_id)
-            users = Users.objects.get(id=users_id)
-            group = GroupForm.objects.get(id=group_id)
-            cycle_id = CycleMeeting.objects.get(id=cycle_id)
+            sync_flag = data.get('sync_flag')
 
             member_shares = MemberShares(
-                logged_in_users=logged_in_users_id,
+                logged_in_users_id=logged_in_users_id,
                 date=date,
-                sharePurchases=sharePurchases,
-                meeting=meeting,
-                users=users,
-                group=group,
-                cycle=cycle_id,
+                sharePurchases=share_purchases,
+                meeting=meeting_id,
+                users=users_id,
+                group_id=group_id,
+                cycle_id=cycle_id,
+                sync_flag=sync_flag,
             )
             member_shares.save()
 
             return JsonResponse({
                 'status': 'success',
-                'message': 'Member shares created successfully',
+                'message': 'Member Shares created successfully',
             })
 
         if request.method == 'GET':
-            member_shares = MemberShares.objects.all()
-            member_shares_data = []
-            for member_share in member_shares:
-                member_shares_data.append({
-                    'logged_in_users_id': member_share.logged_in_users,
-                    'date': member_share.date,
-                    'sharePurchases': member_share.sharePurchases,
-                    'meetingId': member_share.meeting,
-                    'users_id': member_share.users,
-                    'group_id': member_share.group,
-                    'cycle_id': member_share.cycle,
-                })
-            return JsonResponse({
-                'status': 'success',
-                'member_shares': member_shares_data,
-            })
+            # Get all MemberShares objects
+            member_shares_list = MemberShares.objects.all()
+
+            # Create a list to store the serialized data
+            serialized_data = {}
+
+            # Serialize each MemberShares object excluding 'id' field
+            for member_shares in member_shares_list:
+                data = {
+                    'logged_in_user_id': member_shares.logged_in_users_id,
+                    'date': member_shares.date,
+                    'sharePurchases': member_shares.sharePurchases,
+                    'meetingId': member_shares.meeting,
+                    'group_id': member_shares.group_id,
+                    'cycle_id': member_shares.cycle_id,
+                    # Exclude 'id' field
+                }
+                # Add the serialized data to the dictionary using the table name as the key
+                serialized_data['memberShares'] = serialized_data.get('memberShares', []) + [data]
+
+            # Return the serialized data as JSON
+            return JsonResponse(serialized_data, safe=False)
 
     except Exception as e:
         return JsonResponse({
             'status': 'error',
             'message': str(e),
         }, status=500)
-
+    
 @api_view(['GET', 'PUT', 'DELETE'])
 def member_shares_detail(request, pk):
     try:

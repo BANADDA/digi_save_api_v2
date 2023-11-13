@@ -7,51 +7,55 @@ from digi_save_vsla_api.serializers import GroupCycleStatusSerializer
 
 @api_view(['GET', 'POST'])
 def group_cycle_status_list(request):
-    print("Received data:", request.data)
     data = request.data
-
+    print("Received data:", data.get('group_id'))
     try:
         if request.method == 'POST':
-            group_id = data.get('group_id')
-            cycle_id = data.get('cycle_id')
+            group = data.get('group_id')
+            cycle_id = data.get('cycleId')
             is_cycle_started = data.get('is_cycle_started')
+            sync_flag = data.get('sync_flag')
 
-            # Get the related instances based on their IDs
-            group = GroupProfile.objects.get(id=group_id)
-            cycle = CycleMeeting.objects.get(id=cycle_id)
-
-            cycle_status = GroupCycleStatus(
+            group_cycle_status = GroupCycleStatus(
                 group=group,
-                cycleId=cycle,
+                cycleId=cycle_id,
                 is_cycle_started=is_cycle_started,
+                sync_flag=sync_flag,
             )
-            cycle_status.save()
+            group_cycle_status.save()
 
             return JsonResponse({
                 'status': 'success',
-                'message': 'Cycle status created successfully',
+                'message': 'Group Cycle Status created successfully',
             })
 
         if request.method == 'GET':
-            cycle_statuses = GroupCycleStatus.objects.all()
-            cycle_status_data = []
-            for cycle_status in cycle_statuses:
-                cycle_status_data.append({
-                    'group_id': cycle_status.group,
-                    'cycleId': cycle_status.cycleId,
-                    'is_cycle_started': cycle_status.is_cycle_started,
-                })
-            return JsonResponse({
-                'status': 'success',
-                'cycle_statuses': cycle_status_data,
-            })
+            # Get all GroupCycleStatus objects
+            group_cycle_status_list = GroupCycleStatus.objects.all()
+
+            # Create a list to store the serialized data
+            serialized_data = {}
+
+            # Serialize each GroupCycleStatus object excluding 'id' field
+            for group_cycle_status in group_cycle_status_list:
+                data = {
+                    'group_id': group_cycle_status.group,
+                    'cycleId': group_cycle_status.cycleId,
+                    'is_cycle_started': group_cycle_status.is_cycle_started,
+                    # Exclude 'id' field
+                }
+                # Add the serialized data to the dictionary using the table name as the key
+                serialized_data['group_cycle_status'] = serialized_data.get('group_cycle_status', []) + [data]
+
+            # Return the serialized data as JSON
+            return JsonResponse(serialized_data, safe=False)
 
     except Exception as e:
         return JsonResponse({
             'status': 'error',
             'message': str(e),
         }, status=500)
-@api_view(['GET', 'PUT', 'DELETE'])
+    
 def group_cycle_status_detail(request, pk):
     try:
         group_cycle_status = GroupCycleStatus.objects.get(pk=pk)

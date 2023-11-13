@@ -12,6 +12,7 @@ def users_list(request):
 
     try:
         if request.method == 'POST':
+            users_id = data.get('id')
             unique_code = data.get('unique_code')
             fname = data.get('fname')
             lname = data.get('lname')
@@ -32,6 +33,7 @@ def users_list(request):
             pwd_type = data.get('pwd_type')
 
             user = Users(
+                users_id=users_id,
                 unique_code=unique_code,
                 fname=fname,
                 lname=lname,

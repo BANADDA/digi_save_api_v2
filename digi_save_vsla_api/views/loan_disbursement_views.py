@@ -7,55 +7,57 @@ from digi_save_vsla_api.serializers import LoanDisbursementSerializer
 
 @api_view(['GET', 'POST'])
 def loan_disbursement_list(request):
-    print("Received data:", request.data)
     data = request.data
-
+    print("Received data:", data.get('groupId'))
     try:
         if request.method == 'POST':
-            member_id = data.get('member_id')
-            group_id = data.get('groupId')
+            member = data.get('member_id')
+            group = data.get('groupId')
             cycle_id = data.get('cycleId')
-            loan_id = data.get('loan_id')
+            loan = data.get('loan_id')
             disbursement_amount = data.get('disbursement_amount')
             disbursement_date = data.get('disbursement_date')
+            sync_flag = data.get('sync_flag')
 
-            # Get the related instances based on their IDs
-            member = GroupMembers.objects.get(id=member_id)
-            group = GroupForm.objects.get(id=group_id)
-            cycle = CycleMeeting.objects.get(id=cycle_id)
-            loan = Loans.objects.get(id=loan_id)
-
-            disbursement = LoanDisbursement(
+            loan_disbursement = LoanDisbursement(
                 member=member,
                 group=group,
-                cycleId=cycle,
+                cycleId=cycle_id,
                 loan=loan,
                 disbursement_amount=disbursement_amount,
                 disbursement_date=disbursement_date,
+                sync_flag=sync_flag,
             )
-            disbursement.save()
+            loan_disbursement.save()
 
             return JsonResponse({
                 'status': 'success',
-                'message': 'Loan disbursement created successfully',
+                'message': 'Loan Disbursement created successfully',
             })
 
         if request.method == 'GET':
-            disbursements = LoanDisbursement.objects.all()
-            disbursement_data = []
-            for disbursement in disbursements:
-                disbursement_data.append({
-                    'member_id': disbursement.member,
-                    'groupId': disbursement.group,
-                    'cycleId': disbursement.cycleId,
-                    'loan_id': disbursement.loan,
-                    'disbursement_amount': disbursement.disbursement_amount,
-                    'disbursement_date': disbursement.disbursement_date,
-                })
-            return JsonResponse({
-                'status': 'success',
-                'loan_disbursements': disbursement_data,
-            })
+            # Get all LoanDisbursement objects
+            loan_disbursement_list = LoanDisbursement.objects.all()
+
+            # Create a list to store the serialized data
+            serialized_data = {}
+
+            # Serialize each LoanDisbursement object excluding 'id' field
+            for loan_disbursement in loan_disbursement_list:
+                data = {
+                    'member_id': loan_disbursement.member,
+                    'groupId': loan_disbursement.group,
+                    'cycleId': loan_disbursement.cycleId,
+                    'loan_id': loan_disbursement.loan,
+                    'disbursement_amount': loan_disbursement.disbursement_amount,
+                    'disbursement_date': loan_disbursement.disbursement_date,
+                    # Exclude 'id' field
+                }
+                # Add the serialized data to the dictionary using the table name as the key
+                serialized_data['loan_disbursement'] = serialized_data.get('loan_disbursement', []) + [data]
+
+            # Return the serialized data as JSON
+            return JsonResponse(serialized_data, safe=False)
 
     except Exception as e:
         return JsonResponse({

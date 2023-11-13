@@ -8,48 +8,51 @@ from django.http import JsonResponse
 
 @api_view(['GET', 'POST'])
 def share_out_list(request):
-    print("Received data:", request.data)
     data = request.data
-
+    print("Received data:", data.get('group_id'))
     try:
         if request.method == 'POST':
             group_id = data.get('group_id')
             cycle_id = data.get('cycleId')
-            users_id = data.get('users_id')
+            users_id = data.get('user_id')
             share_value = data.get('share_value')
-
-            # Get the related instances based on their IDs
-            group = GroupProfile.objects.get(id=group_id)
-            cycle = CycleMeeting.objects.get(id=cycle_id)
-            users = Users.objects.get(id=users_id)
+            sync_flag = data.get('sync_flag')
 
             share_out = ShareOut(
-                group=group,
-                cycleId=cycle,
-                users=users,
+                group=group_id,
+                cycleId=cycle_id,
+                users=users_id,
                 share_value=share_value,
+                sync_flag=sync_flag,
             )
             share_out.save()
 
             return JsonResponse({
                 'status': 'success',
-                'message': 'Share out created successfully',
+                'message': 'Share Out created successfully',
             })
 
         if request.method == 'GET':
+            # Get all ShareOut objects
             share_out_list = ShareOut.objects.all()
-            share_out_data = []
+
+            # Create a list to store the serialized data
+            serialized_data = {}
+
+            # Serialize each ShareOut object excluding 'id' field
             for share_out in share_out_list:
-                share_out_data.append({
+                data = {
                     'group_id': share_out.group,
                     'cycleId': share_out.cycleId,
-                    'users_id': share_out.users,
+                    'user_id': share_out.users,
                     'share_value': share_out.share_value,
-                })
-            return JsonResponse({
-                'status': 'success',
-                'share_out_list': share_out_data,
-            })
+                    # Exclude 'id' field
+                }
+                # Add the serialized data to the dictionary using the table name as the key
+                serialized_data['share_out'] = serialized_data.get('share_out', []) + [data]
+
+            # Return the serialized data as JSON
+            return JsonResponse(serialized_data, safe=False)
 
     except Exception as e:
         return JsonResponse({

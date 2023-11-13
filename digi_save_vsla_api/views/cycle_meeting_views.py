@@ -7,65 +7,68 @@ from digi_save_vsla_api.serializers import CycleMeetingSerializer
 
 @api_view(['GET', 'POST'])
 def cycle_meeting_list(request):
-    print("Received data:", request.data)
     data = request.data
-
+    print("Received data:", data.get('group_id'))
     try:
         if request.method == 'POST':
             date = data.get('date')
             time = data.get('time')
-            endTime = data.get('endTime')
+            end_time = data.get('endTime')
             location = data.get('location')
             facilitator = data.get('facilitator')
-            meetingPurpose = data.get('meetingPurpose')
+            meeting_purpose = data.get('meetingPurpose')
             latitude = data.get('latitude')
             longitude = data.get('longitude')
             address = data.get('address')
             objectives = data.get('objectives')
-            attendanceData = data.get('attendanceData')
-            representativeData = data.get('representativeData')
+            attendance_data = data.get('attendanceData')
+            representative_data = data.get('representativeData')
             proposals = data.get('proposals')
-            totalLoanFund = data.get('totalLoanFund')
-            totalSocialFund = data.get('totalSocialFund')
-            socialFundContributions = data.get('socialFundContributions')
-            sharePurchases = data.get('sharePurchases')
-            group = data.get('group_id')
-
-            # Get the related group instance based on its ID
-            group = GroupForm.objects.get(id=group)
+            total_loan_fund = data.get('totalLoanFund')
+            total_social_fund = data.get('totalSocialFund')
+            social_fund_contributions = data.get('socialFundContributions')
+            share_purchases = data.get('sharePurchases')
+            sync_flag = data.get('sync_flag')
+            group_id = data.get('group_id')
 
             cycle_meeting = CycleMeeting(
                 date=date,
                 time=time,
-                endTime=endTime,
+                end_time=end_time,
                 location=location,
                 facilitator=facilitator,
-                meetingPurpose=meetingPurpose,
+                meeting_purpose=meeting_purpose,
                 latitude=latitude,
                 longitude=longitude,
                 address=address,
                 objectives=objectives,
-                attendanceData=attendanceData,
-                representativeData=representativeData,
+                attendance_data=attendance_data,
+                representative_data=representative_data,
                 proposals=proposals,
-                totalLoanFund=totalLoanFund,
-                totalSocialFund=totalSocialFund,
-                socialFundContributions=socialFundContributions,
-                sharePurchases=sharePurchases,
-                group=group,
+                total_loan_fund=total_loan_fund,
+                total_social_fund=total_social_fund,
+                social_fund_contributions=social_fund_contributions,
+                share_purchases=share_purchases,
+                sync_flag=sync_flag,
+                group_id=group_id,
             )
             cycle_meeting.save()
 
             return JsonResponse({
                 'status': 'success',
-                'message': 'Cycle meeting created successfully',
+                'message': 'Cycle Meeting created successfully',
             })
 
         if request.method == 'GET':
-            cycle_meetings = CycleMeeting.objects.all()
-            cycle_meeting_data = []
-            for cycle_meeting in cycle_meetings:
-                cycle_meeting_data.append({
+            # Get all CycleMeeting objects
+            cycle_meeting_list = CycleMeeting.objects.all()
+
+            # Create a list to store the serialized data
+            serialized_data = {}
+
+            # Serialize each CycleMeeting object excluding 'id' field
+            for cycle_meeting in cycle_meeting_list:
+                data = {
                     'date': cycle_meeting.date,
                     'time': cycle_meeting.time,
                     'endTime': cycle_meeting.endTime,
@@ -83,12 +86,14 @@ def cycle_meeting_list(request):
                     'totalSocialFund': cycle_meeting.totalSocialFund,
                     'socialFundContributions': cycle_meeting.socialFundContributions,
                     'sharePurchases': cycle_meeting.sharePurchases,
-                    'group_id': cycle_meeting.group,
-                })
-            return JsonResponse({
-                'status': 'success',
-                'cycle_meetings': cycle_meeting_data,
-            })
+                    'group_id': cycle_meeting.group_id,
+                    # Exclude 'id' field
+                }
+                # Add the serialized data to the dictionary using the table name as the key
+                serialized_data['cyclemeeting'] = serialized_data.get('cyclemeeting', []) + [data]
+
+            # Return the serialized data as JSON
+            return JsonResponse(serialized_data, safe=False)
 
     except Exception as e:
         return JsonResponse({

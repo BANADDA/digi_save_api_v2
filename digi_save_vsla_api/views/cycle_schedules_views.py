@@ -14,6 +14,7 @@ def cycle_schedules_list(request):
         if request.method == 'POST':
             
             print("Received data:", data)
+            schedule_id = data.get('id')
             group_id = data.get('group_id')
             meeting_duration = data.get('meeting_duration')
             number_of_meetings = data.get('number_of_meetings')
@@ -21,20 +22,23 @@ def cycle_schedules_list(request):
             day_of_week = data.get('day_of_week')
             start_date = data.get('start_date')
             share_out_date = data.get('share_out_date')
+            sync_flag = data.get('sync_flag')
 
             #  # Get the GroupProfile instance based on the group_id
-            group_profile = GroupProfile.objects.get(id=group_id)
+            # group_profile = GroupProfile.objects.get(profile_id=group_id)
             # print('Group profile object: ', group_profile)
 
 
             cycle_schedules = CycleSchedules(
-                group=group_profile,
+                schedule_id=schedule_id,
+                group_id=group_id,
                 meeting_duration=meeting_duration,
                 number_of_meetings=number_of_meetings,
                 meeting_frequency=meeting_frequency,
                 day_of_week=day_of_week,
                 start_date=start_date,
                 share_out_date=share_out_date,
+                sync_flag=sync_flag,
             )
             cycle_schedules.save()
 
@@ -44,22 +48,29 @@ def cycle_schedules_list(request):
             })
 
         if request.method == 'GET':
-            cycleSchedules_ = CycleSchedules.objects.all()
-            CycleSchedules_data = []
-            for cycle_schedules in cycleSchedules_:
-                CycleSchedules_data.append({
-                    'group_id': cycle_schedules.group,
-                    'meeting_duration': cycle_schedules.meeting_duration,
-                    'number_of_meetings': cycle_schedules.number_of_meetings,
-                    'meeting_frequency': cycle_schedules.meeting_frequency,
-                    'day_of_week': cycle_schedules.day_of_week,
-                    'start_date': cycle_schedules.start_date,
-                    'share_out_date': cycle_schedules.share_out_date,
-                })
-            return JsonResponse({
-                'status': 'success',
-                'CycleSchedules': CycleSchedules_data,
-            })
+            # Get all CycleSchedules objects
+            cycle_schedules = CycleSchedules.objects.all()
+
+            # Create a list to store the serialized data
+            serialized_data = {}
+
+        # Serialize each CycleSchedules object excluding 'id' and 'sync_flag'
+        for cycle_schedules in cycle_schedules:
+            data = {
+                'group_id': cycle_schedules.group_id,  # assuming you want the group_id's id
+                'meeting_duration': cycle_schedules.meeting_duration,
+                'number_of_meetings': cycle_schedules.number_of_meetings,
+                'meeting_frequency': cycle_schedules.meeting_frequency,
+                'day_of_week': cycle_schedules.day_of_week,
+                'start_date': cycle_schedules.start_date,
+                'share_out_date': cycle_schedules.share_out_date,
+                # Exclude 'id' and 'sync_flag' fields
+            }
+             # Add the serialized data to the dictionary using the table name as the key
+            serialized_data['cycle_schedules'] = serialized_data.get('cycle_schedules', []) + [data]
+
+        # Return the serialized data as JSON
+        return JsonResponse(serialized_data, safe=False)
 
     except Exception as e:
         return JsonResponse({

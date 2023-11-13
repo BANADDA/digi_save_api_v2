@@ -8,46 +8,55 @@ from django.http import JsonResponse
 
 @api_view(['GET', 'POST'])
 def social_list(request):
-    print("Received data:", request.data)
     data = request.data
-
+    print("Received data:", data.get('meetingId'))
     try:
         if request.method == 'POST':
-            socialFund = data.get('socialFund')
+            group_id = data.get('group_id')
+            social_fund = data.get('socialFund')
+            sync_flag = data.get('sync_flag')
             meeting_id = data.get('meetingId')
 
-            # Get the related meeting instance based on its ID
-            meeting = Meeting.objects.get(id=meeting_id)
-
             social = Social(
-                socialFund=socialFund,
-                meetingId=meeting,
+                group_id=group_id,
+                socialFund=social_fund,
+                sync_flag=sync_flag,
+                meetingId=meeting_id,
             )
             social.save()
 
             return JsonResponse({
                 'status': 'success',
-                'message': 'Social fund created successfully',
+                'message': 'Social created successfully',
             })
 
         if request.method == 'GET':
+            # Get all Social objects
             social_list = Social.objects.all()
-            social_data = []
+
+            # Create a list to store the serialized data
+            serialized_data = {}
+
+            # Serialize each Social object excluding 'id' field
             for social in social_list:
-                social_data.append({
+                data = {
+                    'group_id':social.group_id,
                     'socialFund': social.socialFund,
                     'meetingId': social.meetingId,
-                })
-            return JsonResponse({
-                'status': 'success',
-                'social_list': social_data,
-            })
+                    # Exclude 'id' field
+                }
+                # Add the serialized data to the dictionary using the table name as the key
+                serialized_data['social'] = serialized_data.get('social', []) + [data]
+
+            # Return the serialized data as JSON
+            return JsonResponse(serialized_data, safe=False)
 
     except Exception as e:
         return JsonResponse({
             'status': 'error',
             'message': str(e),
         }, status=500)
+
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def social_detail(request, pk):

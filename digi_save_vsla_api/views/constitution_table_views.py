@@ -11,7 +11,8 @@ def constitution_table_list(request):
     data = request.data
     try:
         if request.method == 'POST':
-            group = data.get('group_id')
+            constitution_id = data.get('id')
+            group_id = data.get('group_id')
             hasConstitution = data.get('hasConstitution')
             constitutionFiles = data.get('constitutionFiles')
             usesGroupShares = data.get('usesGroupShares')
@@ -28,10 +29,11 @@ def constitution_table_list(request):
             selectedCollateralRequirements = data.get('selectedCollateralRequirements')
 
             # Get the GroupProfile instance based on the group_id
-            group_profile = GroupProfile.objects.get(id=group)
+            # group_profile = GroupProfile.objects.get(profile_id=group_id)
 
             constitution = ConstitutionTable(
-                group=group_profile,
+                constitution_id=constitution_id,
+                group_id=group_id,
                 hasConstitution=hasConstitution,
                 constitutionFiles=constitutionFiles,
                 usesGroupShares=usesGroupShares,
@@ -55,30 +57,38 @@ def constitution_table_list(request):
             })
 
         if request.method == 'GET':
-            constitutions = ConstitutionTable.objects.all()
-            constitution_data = []
-            for constitution in constitutions:
-                constitution_data.append({
-                    'group_id': constitution.group,
-                    'hasConstitution': constitution.hasConstitution,
-                    'constitutionFiles': constitution.constitutionFiles,
-                    'usesGroupShares': constitution.usesGroupShares,
-                    'shareValue': constitution.shareValue,
-                    'maxSharesPerMember': constitution.maxSharesPerMember,
-                    'minSharesRequired': constitution.minSharesRequired,
-                    'frequencyOfContributions': constitution.frequencyOfContributions,
-                    'offersLoans': constitution.offersLoans,
-                    'maxLoanAmount': constitution.maxLoanAmount,
-                    'interestRate': constitution.interestRate,
-                    'interestMethod': constitution.interestMethod,
-                    'loanTerms': constitution.loanTerms,
-                    'registrationFee': constitution.registrationFee,
-                    'selectedCollateralRequirements': constitution.selectedCollateralRequirements,
-                })
-            return JsonResponse({
-                'status': 'success',
-                'constitutions': constitution_data,
-            })
+            # Get all ConstitutionTable objects
+            constitution_tables = ConstitutionTable.objects.all()
+
+            # Create a list to store the serialized data
+            serialized_data = {}
+
+        # Serialize each ConstitutionTable object excluding 'id' and 'sync_flag'
+        for constitution_table in constitution_tables:
+            data = {
+                'group_id': constitution_table.group_id,  # assuming you want the group_id's id
+                'hasConstitution': constitution_table.hasConstitution,
+                'constitutionFiles': constitution_table.constitutionFiles,
+                'usesGroupShares': constitution_table.usesGroupShares,
+                'shareValue': constitution_table.shareValue,
+                'maxSharesPerMember': constitution_table.maxSharesPerMember,
+                'minSharesRequired': constitution_table.minSharesRequired,
+                'frequencyOfContributions': constitution_table.frequencyOfContributions,
+                'offersLoans': constitution_table.offersLoans,
+                'maxLoanAmount': constitution_table.maxLoanAmount,
+                'interestRate': constitution_table.interestRate,
+                'interestMethod': constitution_table.interestMethod,
+                'loanTerms': constitution_table.loanTerms,
+                'registrationFee': constitution_table.registrationFee,
+                'selectedCollateralRequirements': constitution_table.selectedCollateralRequirements,
+                # Exclude 'id' and 'sync_flag' fields
+            }
+
+            # Add the serialized data to the dictionary using the table name as the key
+            serialized_data['constitution_table'] = serialized_data.get('constitution_table', []) + [data]
+
+        # Return the serialized data as JSON
+        return JsonResponse(serialized_data, safe=False)
 
     except Exception as e:
         return JsonResponse({

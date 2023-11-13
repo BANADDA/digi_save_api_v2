@@ -13,18 +13,21 @@ def assigned_positions_list(request):
 
     try:
         if request.method == 'POST':
-            position_id = data.get('position_id')
-            member_id = data.get('member_id')
+            assign_id = data.get('id')
+            positions_id = data.get('position_id')
+            members_id = data.get('member_id')
             group_id = data.get('group_id')
 
             # Get the related instances based on their IDs
-            member = GroupMembers.objects.get(id=member_id)
-            group = GroupProfile.objects.get(id=group_id)
+            # member = GroupMembers.objects.get(member_id=members_id)
+            # group = GroupProfile.objects.get(profile_id=group_id)
+            # position = Positions.objects.get(position_id=positions_id)
 
             assigned_position = AssignedPositions(
-                position=position_id,
-                member=member,
-                group=group,
+                assign_id=assign_id,
+                position_id=members_id,
+                member_id=positions_id,
+                group_id=group_id,
             )
             assigned_position.save()
 
@@ -35,17 +38,18 @@ def assigned_positions_list(request):
 
         if request.method == 'GET':
             assigned_positions = AssignedPositions.objects.all()
-            assigned_positions_data = []
+            assigned_positions_data = {}
             for assigned_position in assigned_positions:
-                assigned_positions_data.append({
-                    'position_id': assigned_position.position,
-                    'member_id': assigned_position.member,
-                    'group_id': assigned_position.group,
-                })
-            return JsonResponse({
-                'status': 'success',
-                'assigned_positions': assigned_positions_data,
-            })
+                data = {
+                    'position_id': assigned_position.position_id,
+                    'member_id': assigned_position.member_id,
+                    'group_id': assigned_position.group_id,
+                }
+
+                assigned_positions_data['assigned_positions'] = assigned_positions_data.get('assigned_positions', []) + [data]
+
+        # Return the serialized data as JSON
+        return JsonResponse(assigned_positions_data, safe=False)
 
     except Exception as e:
         return JsonResponse({

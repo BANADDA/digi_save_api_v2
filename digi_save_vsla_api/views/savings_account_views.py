@@ -9,50 +9,54 @@ from django.http import JsonResponse
 
 @api_view(['GET', 'POST'])
 def savings_account_list(request):
-    print("Received data:", request.data)
     data = request.data
-
+    print("Received data:", data.get('group_id'))
     try:
         if request.method == 'POST':
-            logged_in_users_id = data.get('logged_in_users_id')
+            logged_in_users_id = data.get('logged_in_user_id')
             date = data.get('date')
             purpose = data.get('purpose')
             amount = data.get('amount')
+            sync_flag = data.get('sync_flag')
             group_id = data.get('group_id')
 
-            # Get the related instances based on their IDs
-            group = GroupForm.objects.get(id=group_id)
-            logged_in_users_id = Users.objects.get(id=logged_in_users_id)
-
             savings_account = SavingsAccount(
-                logged_in_users=logged_in_users_id,
+                logged_in_users_id=logged_in_users_id,
                 date=date,
                 purpose=purpose,
                 amount=amount,
-                group=group
+                sync_flag=sync_flag,
+                group=group_id,
             )
             savings_account.save()
 
             return JsonResponse({
                 'status': 'success',
-                'message': 'Savings account created successfully',
+                'message': 'Savings Account created successfully',
             })
 
         if request.method == 'GET':
-            savings_accounts = SavingsAccount.objects.all()
-            savings_account_data = []
-            for savings_account in savings_accounts:
-                savings_account_data.append({
-                    'logged_in_users_id': savings_account.logged_in_users,
+            # Get all SavingsAccount objects
+            savings_account_list = SavingsAccount.objects.all()
+
+            # Create a list to store the serialized data
+            serialized_data = {}
+
+            # Serialize each SavingsAccount object excluding 'id' field
+            for savings_account in savings_account_list:
+                data = {
+                    'logged_in_user_id': savings_account.logged_in_users_id,
                     'date': savings_account.date,
                     'purpose': savings_account.purpose,
                     'amount': savings_account.amount,
                     'group_id': savings_account.group,
-                })
-            return JsonResponse({
-                'status': 'success',
-                'savings_accounts': savings_account_data,
-            })
+                    # Exclude 'id' field
+                }
+                # Add the serialized data to the dictionary using the table name as the key
+                serialized_data['savings_account'] = serialized_data.get('savings_account', []) + [data]
+
+            # Return the serialized data as JSON
+            return JsonResponse(serialized_data, safe=False)
 
     except Exception as e:
         return JsonResponse({

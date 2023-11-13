@@ -8,26 +8,22 @@ from django.http import JsonResponse
 
 @api_view(['GET', 'POST'])
 def shares_list(request):
-    print("Received data:", request.data)
     data = request.data
-
+    print("Received data:", data.get('group_id'))
     try:
         if request.method == 'POST':
-            sharePurchases = data.get('sharePurchases')
+            share_purchases = data.get('sharePurchases')
             meeting_id = data.get('meetingId')
             cycle_id = data.get('cycle_id')
             group_id = data.get('group_id')
-
-            # Get the related instances based on their IDs
-            meeting = Meeting.objects.get(id=meeting_id)
-            cycle = CycleMeeting.objects.get(id=cycle_id)
-            group = GroupForm.objects.get(id=group_id)
+            sync_flag = data.get('sync_flag')
 
             shares = Shares(
-                sharePurchases=sharePurchases,
-                meetingId=meeting,
-                cycle=cycle,
-                group=group,
+                sharePurchases=share_purchases,
+                meetingId=meeting_id,
+                cycle_id=cycle_id,
+                group_id=group_id,
+                sync_flag=sync_flag,
             )
             shares.save()
 
@@ -37,25 +33,33 @@ def shares_list(request):
             })
 
         if request.method == 'GET':
+            # Get all Shares objects
             shares_list = Shares.objects.all()
-            shares_data = []
-            for share in shares_list:
-                shares_data.append({
-                    'sharePurchases': share.sharePurchases,
-                    'meetingId': share.meetingId,
-                    'cycle_id': share.cycle,
-                    'group_id': share.group,
-                })
-            return JsonResponse({
-                'status': 'success',
-                'shares_list': shares_data,
-            })
+
+            # Create a list to store the serialized data
+            serialized_data = {}
+
+            # Serialize each Shares object excluding 'id' field
+            for shares in shares_list:
+                data = {
+                    'sharePurchases': shares.sharePurchases,
+                    'meetingId': shares.meetingId,
+                    'cycle_id': shares.cycle_id,
+                    'group_id': shares.group_id,
+                    # Exclude 'id' field
+                }
+                # Add the serialized data to the dictionary using the table name as the key
+                serialized_data['shares'] = serialized_data.get('shares', []) + [data]
+
+            # Return the serialized data as JSON
+            return JsonResponse(serialized_data, safe=False)
 
     except Exception as e:
         return JsonResponse({
             'status': 'error',
             'message': str(e),
         }, status=500)
+
 @api_view(['GET', 'PUT', 'DELETE'])
 def shares_detail(request, pk):
     try:

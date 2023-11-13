@@ -17,12 +17,12 @@ def group_fees_list(request):
             registration_fee = data.get('registration_fee')
 
             # Get the related instances based on their IDs
-            member = GroupMembers.objects.get(id=member_id)
-            group = GroupForm.objects.get(id=group_id)
+            # member = GroupMembers.objects.get(member_id=members_id)
+            # group = GroupForm.objects.get(id=group_id)
 
             fee = GroupFees(
-                member=member,
-                group=group,
+                member=member_id,
+                group_id=group_id,
                 registration_fee=registration_fee,
             )
             fee.save()
@@ -33,18 +33,25 @@ def group_fees_list(request):
             })
 
         if request.method == 'GET':
-            fees = GroupFees.objects.all()
-            fee_data = []
-            for fee in fees:
-                fee_data.append({
-                    'member_id': fee.member,
-                    'group_id': fee.group,
-                    'registration_fee': fee.registration_fee,
-                })
-            return JsonResponse({
-                'status': 'success',
-                'fees': fee_data,
-            })
+            # Get all GroupFees objects
+            group_fees = GroupFees.objects.all()
+
+            # Create a list to store the serialized data
+            serialized_data = {}
+
+        # Serialize each GroupFees object excluding 'id' and 'sync_flag'
+        for group_fees in group_fees:
+            data = {
+                'member_id': group_fees.member,  # assuming you want the member's id
+                'group_id': group_fees.group_id,  # assuming you want the group_id's id
+                'registration_fee': group_fees.registration_fee,
+                # Exclude 'id' and 'sync_flag' fields
+            }
+             # Add the serialized data to the dictionary using the table name as the key
+            serialized_data['group_fees'] = serialized_data.get('group_fees', []) + [data]
+
+        # Return the serialized data as JSON
+        return JsonResponse(serialized_data, safe=False)
 
     except Exception as e:
         return JsonResponse({

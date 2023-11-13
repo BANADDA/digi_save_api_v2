@@ -7,36 +7,30 @@ from digi_save_vsla_api.serializers import FinesSerializer
 
 @api_view(['GET', 'POST'])
 def fines_list(request):
-    print("Received data:", request.data)
     data = request.data
-
+    print("Received data:", data.get('memberId'))
     try:
         if request.method == 'POST':
-            member_id = data.get('member_id')
+            member_id = data.get('memberId')
             amount = data.get('amount')
             reason = data.get('reason')
-            group_id = data.get('group_id')
-            cycle_id = data.get('cycle_id')
-            meeting_id = data.get('meeting_id')
-            savings_account_id = data.get('savings_account_id')
+            group_id = data.get('groupId')
+            cycle_id = data.get('cycleId')
+            meeting_id = data.get('meetingId')
+            savings_account_id = data.get('savingsAccountId')
+            sync_flag = data.get('sync_flag')
 
-            # Get the related instances based on their IDs
-            member = GroupMembers.objects.get(id=member_id)
-            group = GroupForm.objects.get(id=group_id)
-            cycle = CycleMeeting.objects.get(id=cycle_id)
-            meeting = Meeting.objects.get(id=meeting_id)
-            savings_account = SavingsAccount.objects.get(id=savings_account_id)
-
-            fine = Fines(
-                memberId=member,
+            fines = Fines(
+                memberId=member_id,
                 amount=amount,
                 reason=reason,
-                groupId=group,
-                cycleId=cycle,
-                meetingId=meeting,
-                savingsAccountId=savings_account,
+                groupId=group_id,
+                cycleId=cycle_id,
+                meetingId=meeting_id,
+                savingsAccountId=savings_account_id,
+                sync_flag=sync_flag,
             )
-            fine.save()
+            fines.save()
 
             return JsonResponse({
                 'status': 'success',
@@ -44,23 +38,35 @@ def fines_list(request):
             })
 
         if request.method == 'GET':
-            fines = Fines.objects.all()
-            fine_data = []
-            for fine in fines:
-                fine_data.append({
-                    'member_id': fine.memberId,
-                    'amount': fine.amount,
-                    'reason': fine.reason,
-                    'group_id': fine.groupId,
-                    'cycle_id': fine.cycleId,
-                    'meeting_id': fine.meetingId,
-                    'savings_account_id': fine.savingsAccountId,
-                })
-            return JsonResponse({
-                'status': 'success',
-                'fines': fine_data,
-            })
+            # Get all Fines objects
+            fines_list = Fines.objects.all()
 
+            # Create a list to store the serialized data
+            serialized_data = {}
+
+            # Serialize each Fines object excluding 'id' field
+            for fines in fines_list:
+                data = {
+                    'memberId': fines.memberId,
+                    'amount': fines.amount,
+                    'reason': fines.reason,
+                    'groupId': fines.groupId,
+                    'cycleId': fines.cycleId,
+                    'meetingId': fines.meetingId,
+                    'savingsAccountId': fines.savingsAccountId,
+                    # Exclude 'id' field
+                }
+                # Add the serialized data to the dictionary using the table name as the key
+                serialized_data['fines'] = serialized_data.get('fines', []) + [data]
+
+            # Return the serialized data as JSON
+            return JsonResponse(serialized_data, safe=False)
+
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': str(e),
+        }, status=500)
     except Exception as e:
         return JsonResponse({
             'status': 'error',
