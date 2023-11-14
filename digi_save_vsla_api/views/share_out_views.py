@@ -16,14 +16,12 @@ def share_out_list(request):
             cycle_id = data.get('cycleId')
             users_id = data.get('user_id')
             share_value = data.get('share_value')
-            sync_flag = data.get('sync_flag')
 
             share_out = ShareOut(
                 group=group_id,
                 cycleId=cycle_id,
                 users=users_id,
                 share_value=share_value,
-                sync_flag=sync_flag,
             )
             share_out.save()
 

@@ -13,12 +13,10 @@ def active_cycle_meeting_list(request):
         if request.method == 'POST':
             group_id = data.get('group_id')
             cycle_meeting_id = data.get('cycle_meeting_id')
-            sync_flag = data.get('sync_flag')
 
             active_cycle_meeting = ActiveCycleMeeting(
                 group_id=group_id,
                 cycleMeetingID=cycle_meeting_id,
-                sync_flag=sync_flag,
             )
             active_cycle_meeting.save()
 

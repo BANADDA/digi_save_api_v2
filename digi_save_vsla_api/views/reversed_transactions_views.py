@@ -19,7 +19,6 @@ def reversed_transactions_list(request):
             date = data.get('date')
             purpose = data.get('purpose')
             reversed_data = data.get('reversed_data')
-            sync_flag = data.get('sync_flag')
 
             reversed_transaction = ReversedTransactions(
                 group=group_id,
@@ -29,7 +28,6 @@ def reversed_transactions_list(request):
                 date=date,
                 purpose=purpose,
                 reversed_data=reversed_data,
-                sync_flag=sync_flag,
             )
             reversed_transaction.save()
 

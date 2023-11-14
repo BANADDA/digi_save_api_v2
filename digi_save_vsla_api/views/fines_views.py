@@ -18,7 +18,6 @@ def fines_list(request):
             cycle_id = data.get('cycleId')
             meeting_id = data.get('meetingId')
             savings_account_id = data.get('savingsAccountId')
-            sync_flag = data.get('sync_flag')
 
             fines = Fines(
                 memberId=member_id,
@@ -28,7 +27,6 @@ def fines_list(request):
                 cycleId=cycle_id,
                 meetingId=meeting_id,
                 savingsAccountId=savings_account_id,
-                sync_flag=sync_flag,
             )
             fines.save()
 

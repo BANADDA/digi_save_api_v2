@@ -17,15 +17,13 @@ def welfare_account_list(request):
             group_id = data.get('group_id')
             meeting_id = data.get('meeting_id')
             cycle_id = data.get('cycle_id')
-            sync_flag = data.get('sync_flag')
-
+            
             welfare_account = WelfareAccount(
                 logged_in_users_id=logged_in_users_id,
                 amount=amount,
                 group_id=group_id,
                 meeting_id=meeting_id,
                 cycle_id=cycle_id,
-                sync_flag=sync_flag,
             )
             welfare_account.save()
 

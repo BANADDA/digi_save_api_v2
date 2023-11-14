@@ -14,10 +14,8 @@ def group_members_list(request):
         if request.method == 'POST':
             
             print("Received data:", data)
-            member_id = data.get('id')
             group_id = data.get('group_id')
             user_id = data.get('user_id')
-            sync_flag = data.get('sync_flag')
 
             #  # Get the GroupProfile instance based on the group_id
             # group_id = GroupProfile.objects.get(profile_id=group_id)
@@ -25,10 +23,8 @@ def group_members_list(request):
 
 
             group_members = GroupMembers(
-                member_id=member_id,
                 group_id=group_id,
                 user_id=user_id,
-                sync_flag=sync_flag,
             )
             group_members.save()
 

@@ -15,13 +15,9 @@ def positions_list(request):
             
             print("Received data:", data)
             name = data.get('name')
-            position_id = data.get('id')
-            sync_flag = data.get('sync_flag')
 
             group_members = Positions(
                 name=name,
-                position_id=position_id,
-                sync_flag=sync_flag,
             )
             group_members.save()
 

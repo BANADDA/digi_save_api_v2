@@ -16,14 +16,12 @@ def shares_list(request):
             meeting_id = data.get('meetingId')
             cycle_id = data.get('cycle_id')
             group_id = data.get('group_id')
-            sync_flag = data.get('sync_flag')
 
             shares = Shares(
                 sharePurchases=share_purchases,
                 meetingId=meeting_id,
                 cycle_id=cycle_id,
                 group_id=group_id,
-                sync_flag=sync_flag,
             )
             shares.save()
 

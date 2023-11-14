@@ -21,7 +21,6 @@ def social_fund_applications_list(request):
             amount_needed = data.get('amount_needed')
             social_purpose = data.get('social_purpose')
             repayment_date = data.get('repayment_date')
-            sync_flag = data.get('sync_flag')
 
             social_fund_application = SocialFundApplications(
                 group_id=group_id,
@@ -33,7 +32,6 @@ def social_fund_applications_list(request):
                 amount_needed=amount_needed,
                 social_purpose=social_purpose,
                 repayment_date=repayment_date,
-                sync_flag=sync_flag,
             )
             social_fund_application.save()
 

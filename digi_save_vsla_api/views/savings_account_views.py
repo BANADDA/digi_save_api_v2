@@ -17,7 +17,6 @@ def savings_account_list(request):
             date = data.get('date')
             purpose = data.get('purpose')
             amount = data.get('amount')
-            sync_flag = data.get('sync_flag')
             group_id = data.get('group_id')
 
             savings_account = SavingsAccount(
@@ -25,7 +24,6 @@ def savings_account_list(request):
                 date=date,
                 purpose=purpose,
                 amount=amount,
-                sync_flag=sync_flag,
                 group=group_id,
             )
             savings_account.save()

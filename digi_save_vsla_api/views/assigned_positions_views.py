@@ -13,7 +13,6 @@ def assigned_positions_list(request):
 
     try:
         if request.method == 'POST':
-            assign_id = data.get('id')
             positions_id = data.get('position_id')
             members_id = data.get('member_id')
             group_id = data.get('group_id')
@@ -24,7 +23,6 @@ def assigned_positions_list(request):
             # position = Positions.objects.get(position_id=positions_id)
 
             assigned_position = AssignedPositions(
-                assign_id=assign_id,
                 position_id=members_id,
                 member_id=positions_id,
                 group_id=group_id,

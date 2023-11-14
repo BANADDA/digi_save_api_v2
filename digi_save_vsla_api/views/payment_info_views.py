@@ -18,7 +18,6 @@ def payment_info_list(request):
             member_id = data.get('member_id')
             payment_amount = data.get('payment_amount')
             payment_date = data.get('payment_date')
-            sync_flag = data.get('sync_flag')
 
             payment_info = PaymentInfo(
                 group=group_id,
@@ -27,7 +26,6 @@ def payment_info_list(request):
                 payment_amount=payment_amount,
                 member_id=member_id,
                 payment_date=payment_date,
-                sync_flag=sync_flag,
             )
             payment_info.save()
 

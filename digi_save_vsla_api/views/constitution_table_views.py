@@ -11,7 +11,6 @@ def constitution_table_list(request):
     data = request.data
     try:
         if request.method == 'POST':
-            constitution_id = data.get('id')
             group_id = data.get('group_id')
             hasConstitution = data.get('hasConstitution')
             constitutionFiles = data.get('constitutionFiles')
@@ -32,7 +31,6 @@ def constitution_table_list(request):
             # group_profile = GroupProfile.objects.get(profile_id=group_id)
 
             constitution = ConstitutionTable(
-                constitution_id=constitution_id,
                 group_id=group_id,
                 hasConstitution=hasConstitution,
                 constitutionFiles=constitutionFiles,

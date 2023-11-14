@@ -14,7 +14,6 @@ def cycle_schedules_list(request):
         if request.method == 'POST':
             
             print("Received data:", data)
-            schedule_id = data.get('id')
             group_id = data.get('group_id')
             meeting_duration = data.get('meeting_duration')
             number_of_meetings = data.get('number_of_meetings')
@@ -22,7 +21,6 @@ def cycle_schedules_list(request):
             day_of_week = data.get('day_of_week')
             start_date = data.get('start_date')
             share_out_date = data.get('share_out_date')
-            sync_flag = data.get('sync_flag')
 
             #  # Get the GroupProfile instance based on the group_id
             # group_profile = GroupProfile.objects.get(profile_id=group_id)
@@ -30,7 +28,6 @@ def cycle_schedules_list(request):
 
 
             cycle_schedules = CycleSchedules(
-                schedule_id=schedule_id,
                 group_id=group_id,
                 meeting_duration=meeting_duration,
                 number_of_meetings=number_of_meetings,
@@ -38,7 +35,6 @@ def cycle_schedules_list(request):
                 day_of_week=day_of_week,
                 start_date=start_date,
                 share_out_date=share_out_date,
-                sync_flag=sync_flag,
             )
             cycle_schedules.save()
 

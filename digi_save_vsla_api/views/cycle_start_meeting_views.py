@@ -29,7 +29,6 @@ def cycle_start_meeting_list(request):
             social_fund_bag = data.get('social_fund_bag')
             social_fund_contributions = data.get('social_fund_contributions')
             share_purchases = data.get('share_purchases')
-            sync_flag = data.get('sync_flag')
 
             cycle_start_meeting = CycleStartMeeting(
                 group=group,
@@ -50,7 +49,6 @@ def cycle_start_meeting_list(request):
                 social_fund_bag=social_fund_bag,
                 social_fund_contributions=social_fund_contributions,
                 share_purchases=share_purchases,
-                sync_flag=sync_flag,
             )
             cycle_start_meeting.save()
 

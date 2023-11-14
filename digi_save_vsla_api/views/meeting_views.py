@@ -29,7 +29,6 @@ def meeting_list(request):
             share_purchases = data.get('sharePurchases')
             total_loan_fund = data.get('totalLoanFund')
             total_social_fund = data.get('totalSocialFund')
-            sync_flag = data.get('sync_flag')
             group_id = data.get('group_id')
             cycle_id = data.get('cycle_id')
 
@@ -51,7 +50,6 @@ def meeting_list(request):
                 sharePurchases=share_purchases,
                 totalLoanFund=total_loan_fund,
                 totalSocialFund=total_social_fund,
-                sync_flag=sync_flag,
                 group_id=group_id,
                 cycle_id=cycle_id,
             )

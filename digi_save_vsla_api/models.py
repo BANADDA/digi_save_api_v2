@@ -2,7 +2,6 @@ from django.db import models
 
 # Create your models here.
 class GroupProfile(models.Model):
-    profile_id = models.IntegerField(default=None, blank=True, null=True)
     groupName = models.CharField(max_length=255, default=None, blank=True, null=True)
     countryOfOrigin = models.CharField(max_length=255, default=None, blank=True, null=True)
     meetingLocation = models.CharField(max_length=255, default=None, blank=True, null=True)
@@ -15,13 +14,11 @@ class GroupProfile(models.Model):
     numberOfMeetings = models.CharField(max_length=255, default=None, blank=True, null=True)
     loanFund = models.CharField(max_length=255, default=None, blank=True, null=True)
     socialFund = models.CharField(max_length=255, default=None, blank=True, null=True)
-    sync_flag = models.IntegerField(default=1)
 
     def __str__(self):
         return self.groupName
     
 class ConstitutionTable(models.Model):
-    constitution_id = models.IntegerField(default=None, blank=True, null=True)
     group_id = models.IntegerField(default=None, blank=True, null=True)
     hasConstitution = models.IntegerField(default=None, blank=True, null=True)
     constitutionFiles = models.BinaryField(default=None, blank=True, null=True)
@@ -37,13 +34,11 @@ class ConstitutionTable(models.Model):
     loanTerms = models.CharField(max_length=255, default=None, blank=True, null=True)
     registrationFee = models.CharField(max_length=255, default=None, blank=True, null=True)
     selectedCollateralRequirements = models.CharField(max_length=255, default=None, blank=True, null=True)
-    sync_flag = models.IntegerField(default=1)
 
     def __str__(self):
         return f"ConstitutionTable for Group ID: {self.group_id}  - Has Constitution: {self.hasConstitution}"
 
 class Users(models.Model):
-    users_id = models.IntegerField(default=None, blank=True, null=True)
     unique_code = models.TextField()
     fname = models.TextField()
     lname = models.TextField()
@@ -62,22 +57,18 @@ class Users(models.Model):
     next_of_kin_has_phone_number = models.IntegerField(default=None, blank=True, null=True)
     next_of_kin_phone_number = models.TextField(default=None, blank=True, null=True)
     pwd_type = models.TextField(default=None, blank=True, null=True)
-    sync_flag = models.IntegerField(default=1)
     
     def __str__(self):
         return f"{self.fname} {self.lname}"
 
 class GroupMembers(models.Model):
-    member_id = models.IntegerField(default=None, blank=True, null=True)
     user_id = models.IntegerField(default=None, blank=True, null=True)
     group_id = models.IntegerField(default=None, blank=True, null=True)
-    sync_flag = models.IntegerField(default=1)
 
     def __str__(self):
         return f"GroupMember {self.user_id} for Group ID: {self.group_id}"
 
 class CycleSchedules(models.Model):
-    schedule_id = models.IntegerField(default=None, blank=True, null=True)
     group_id = models.IntegerField(default=None, blank=True, null=True)
     meeting_duration = models.TextField()
     number_of_meetings = models.IntegerField()
@@ -85,7 +76,6 @@ class CycleSchedules(models.Model):
     day_of_week = models.TextField()
     start_date = models.TextField()
     share_out_date = models.TextField()
-    sync_flag = models.IntegerField(default=1)
     
     def __str__(self):
         return f"CycleSchedules for Group ID: {self.group_id}"
@@ -93,25 +83,20 @@ class CycleSchedules(models.Model):
 
 class Positions(models.Model):
     name = models.TextField()
-    position_id = models.IntegerField(default=None, blank=True, null=True)
-    sync_flag = models.IntegerField(default=1)
     
     def __str__(self):
         return self.name
     
 class AssignedPositions(models.Model):
-    assign_id = models.IntegerField(default=None, blank=True, null=True)
     position_id = models.IntegerField(default=None, blank=True, null=True)
     member_id = models.IntegerField(default=None, blank=True, null=True)
     group_id = models.IntegerField(default=None, blank=True, null=True)
-    sync_flag = models.IntegerField(default=1)
     
     def __str__(self):
      return f"Assigned position for Group Id{self.position_id}"
 
 
 class GroupForm(models.Model):
-    group_id = models.IntegerField(default=None, blank=True, null=True)
     group_profile_id = models.IntegerField(default=None, blank=True, null=True)
     group_id = models.IntegerField(default=None, blank=True, null=True)
     logged_in_users_id = models.IntegerField(default=None, blank=True, null=True)
@@ -119,7 +104,6 @@ class GroupForm(models.Model):
     cycle_schedule_id = models.IntegerField(default=None, blank=True, null=True)
     group_member_id = models.IntegerField(default=None, blank=True, null=True)
     assigned_position_id = models.IntegerField(default=None, blank=True, null=True)
-    sync_flag = models.IntegerField(default=1)
     
     def __str__(self):
         return f"Group Id: {self.group_id}"
@@ -129,7 +113,6 @@ class SavingsAccount(models.Model):
     date = models.TextField()
     purpose = models.TextField()
     amount = models.FloatField()
-    sync_flag = models.IntegerField(default=1)
     
     group = models.IntegerField(default=None, blank=True, null=True)
 
@@ -137,34 +120,31 @@ class SavingsAccount(models.Model):
         return str(self.group)
 
 class GroupFees(models.Model):
-    fee_id = models.IntegerField(default=None, blank=True, null=True)
     member = models.IntegerField(default=None, blank=True, null=True)
     group_id = models.IntegerField(default=None, blank=True, null=True)
     registration_fee = models.FloatField()
-    sync_flag = models.IntegerField(default=1)
     
     def __str__(self):
         return str(self.member)
 
 class CycleMeeting(models.Model):
-    date = models.TextField()
-    time = models.TextField()
-    endTime = models.TextField()
-    location = models.TextField()
-    facilitator = models.TextField()
-    meetingPurpose = models.TextField()
-    latitude = models.FloatField()
-    longitude = models.FloatField()
-    address = models.TextField()
-    objectives = models.TextField()
-    attendanceData = models.TextField()
-    representativeData = models.TextField()
-    proposals = models.TextField()
-    totalLoanFund = models.IntegerField()
-    totalSocialFund = models.IntegerField()
-    socialFundContributions = models.TextField()
-    sharePurchases = models.TextField()
-    sync_flag = models.IntegerField(default=1)
+    date = models.TextField(default=None, blank=True, null=True)
+    time = models.TextField(default=None, blank=True, null=True)
+    endTime = models.TextField(default=None, blank=True, null=True)
+    location = models.TextField(default=None, blank=True, null=True)
+    facilitator = models.TextField(default=None, blank=True, null=True)
+    meetingPurpose = models.TextField(default=None, blank=True, null=True)
+    latitude = models.FloatField(default=None, blank=True, null=True)
+    longitude = models.FloatField(default=None, blank=True, null=True)
+    address = models.TextField(default=None, blank=True, null=True)
+    objectives = models.TextField(default=None, blank=True, null=True)
+    attendanceData = models.TextField(default=None, blank=True, null=True)
+    representativeData = models.TextField(default=None, blank=True, null=True)
+    proposals = models.TextField(default=None, blank=True, null=True)
+    totalLoanFund = models.IntegerField(default=None, blank=True, null=True)
+    totalSocialFund = models.IntegerField(default=None, blank=True, null=True)
+    socialFundContributions = models.TextField(default=None, blank=True, null=True)
+    sharePurchases = models.TextField(default=None, blank=True, null=True)
     
     group_id = models.IntegerField(default=None, blank=True, null=True)
     
@@ -189,7 +169,6 @@ class Meeting(models.Model):
     sharePurchases = models.TextField()
     totalLoanFund = models.IntegerField()
     totalSocialFund = models.IntegerField()
-    sync_flag = models.IntegerField(default=1)
     
     group_id = models.IntegerField(default=None, blank=True, null=True)
     cycle_id = models.IntegerField(default=None, blank=True, null=True)
@@ -207,7 +186,6 @@ class MemberShares(models.Model):
     users = models.IntegerField(default=None, blank=True, null=True)
     group_id = models.IntegerField(default=None, blank=True, null=True)
     cycle_id = models.IntegerField(default=None, blank=True, null=True)
-    sync_flag = models.IntegerField(default=1)
     
     def __str__(self):
         return str(self.group_id)
@@ -218,7 +196,6 @@ class WelfareAccount(models.Model):
     group_id = models.IntegerField(default=None, blank=True, null=True)
     meeting_id = models.IntegerField(default=None, blank=True, null=True)
     cycle_id = models.IntegerField(default=None, blank=True, null=True)
-    sync_flag = models.IntegerField(default=1)
     
     def __str__(self):
         return str(self.group_id)
@@ -227,7 +204,6 @@ class ActiveCycleMeeting(models.Model):
     
     group_id = models.IntegerField(default=None, blank=True, null=True)
     cycleMeetingID = models.IntegerField(default=None, blank=True, null=True)
-    sync_flag = models.IntegerField(default=1)
     
     def __str__(self):
         return str(self.group_id)
@@ -238,7 +214,6 @@ class Shares(models.Model):
     meetingId = models.IntegerField(default=None, blank=True, null=True)
     cycle_id = models.IntegerField(default=None, blank=True, null=True)
     group_id = models.IntegerField(default=None, blank=True, null=True)
-    sync_flag = models.IntegerField(default=1)
     
     def __str__(self):
         return str(self.group_id)
@@ -246,7 +221,6 @@ class Shares(models.Model):
 
 class Social(models.Model):
     socialFund = models.TextField()
-    sync_flag = models.IntegerField(default=1)
     group_id = models.IntegerField(default=None, blank=True, null=True)
     meetingId = models.IntegerField(default=None, blank=True, null=True)
     
@@ -263,7 +237,6 @@ class LoanApplications(models.Model):
     amount_needed = models.FloatField()
     loan_purpose = models.TextField()
     repayment_date = models.TextField()
-    sync_flag = models.IntegerField(default=1)
     
     def __str__(self):
         return str(self.group_id)
@@ -279,7 +252,6 @@ class SocialFundApplications(models.Model):
     amount_needed = models.FloatField()
     social_purpose = models.TextField()
     repayment_date = models.TextField()
-    sync_flag = models.IntegerField(default=1)
     
     def __str__(self):
         return str(self.group_id)
@@ -304,7 +276,6 @@ class CycleStartMeeting(models.Model):
     social_fund_bag = models.TextField()
     social_fund_contributions = models.TextField()
     share_purchases = models.TextField()
-    sync_flag = models.IntegerField(default=1)
 
 
 class PaymentInfo(models.Model):
@@ -314,7 +285,6 @@ class PaymentInfo(models.Model):
     member_id = models.IntegerField(default=None, blank=True, null=True)
     payment_amount = models.FloatField()
     payment_date = models.TextField()
-    sync_flag = models.IntegerField(default=1)
     
     def __str__(self):
         return str(self.group)
@@ -328,7 +298,6 @@ class Fines(models.Model):
     cycleId = models.IntegerField(default=None, blank=True, null=True)
     meetingId = models.IntegerField(default=None, blank=True, null=True)
     savingsAccountId = models.IntegerField(default=None, blank=True, null=True)
-    sync_flag = models.IntegerField(default=1)
     
     def __str__(self):
         return str(self.groupId)
@@ -338,7 +307,6 @@ class GroupCycleStatus(models.Model):
     group = models.IntegerField(default=None, blank=True, null=True)
     cycleId = models.IntegerField(default=None, blank=True, null=True)
     is_cycle_started = models.BooleanField(default=False)
-    sync_flag = models.IntegerField(default=1)
     
     def __str__(self):
         return str(self.group)
@@ -353,8 +321,7 @@ class Loans(models.Model):
     start_date = models.TextField()
     end_date = models.TextField()
     status = models.TextField()
-    sync_flag = models.IntegerField(default=1)
-    
+
     def __str__(self):
         return str(self.group)
 
@@ -366,7 +333,6 @@ class LoanDisbursement(models.Model):
     loan = models.IntegerField(default=None, blank=True, null=True)
     disbursement_amount = models.FloatField()
     disbursement_date = models.DateField()
-    sync_flag = models.IntegerField(default=1)
     
     def __str__(self):
         return str(self.group)
@@ -378,7 +344,7 @@ class LoanPayments(models.Model):
     loan = models.IntegerField(default=None, blank=True, null=True)
     payment_amount = models.FloatField()
     payment_date = models.TextField()
-    sync_flag = models.IntegerField(default=1)
+
     def __str__(self):
         return str(self.group)
 
@@ -388,7 +354,7 @@ class ShareOut(models.Model):
     cycleId = models.IntegerField(default=None, blank=True, null=True)
     users = models.IntegerField(default=None, blank=True, null=True)
     share_value = models.FloatField()
-    sync_flag = models.IntegerField(default=1)
+
     def __str__(self):
         return str(self.group)
 
@@ -401,7 +367,6 @@ class ReversedTransactions(models.Model):
     date = models.TextField()
     purpose = models.TextField()
     reversed_data = models.TextField()
-    sync_flag = models.IntegerField(default=1)
     
     def __str__(self):
         return str(self.group)

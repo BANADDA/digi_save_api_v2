@@ -21,8 +21,6 @@ def loans_list(request):
             start_date = data.get('start_date')
             end_date = data.get('end_date')
             status = data.get('status')
-            sync_flag = data.get('sync_flag')
-
             loan = Loans(
                 member=member,
                 loan_applicant=loan_applicant,
@@ -33,7 +31,6 @@ def loans_list(request):
                 start_date=start_date,
                 end_date=end_date,
                 status=status,
-                sync_flag=sync_flag,
             )
             loan.save()
 

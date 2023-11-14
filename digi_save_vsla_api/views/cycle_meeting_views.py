@@ -28,7 +28,6 @@ def cycle_meeting_list(request):
             total_social_fund = data.get('totalSocialFund')
             social_fund_contributions = data.get('socialFundContributions')
             share_purchases = data.get('sharePurchases')
-            sync_flag = data.get('sync_flag')
             group_id = data.get('group_id')
 
             cycle_meeting = CycleMeeting(
@@ -49,7 +48,6 @@ def cycle_meeting_list(request):
                 totalSocialFund=total_social_fund,
                 socialFundContributions=social_fund_contributions,
                 sharePurchases=share_purchases,
-                sync_flag=sync_flag,
                 group_id=group_id,
             )
             cycle_meeting.save()

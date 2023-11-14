@@ -17,7 +17,6 @@ def loan_disbursement_list(request):
             loan = data.get('loan_id')
             disbursement_amount = data.get('disbursement_amount')
             disbursement_date = data.get('disbursement_date')
-            sync_flag = data.get('sync_flag')
 
             loan_disbursement = LoanDisbursement(
                 member=member,
@@ -26,7 +25,6 @@ def loan_disbursement_list(request):
                 loan=loan,
                 disbursement_amount=disbursement_amount,
                 disbursement_date=disbursement_date,
-                sync_flag=sync_flag,
             )
             loan_disbursement.save()
 

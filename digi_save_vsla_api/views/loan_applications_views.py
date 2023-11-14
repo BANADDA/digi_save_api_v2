@@ -20,7 +20,6 @@ def loan_applications_list(request):
             amount_needed = data.get('amount_needed')
             loan_purpose = data.get('loan_purpose')
             repayment_date = data.get('repayment_date')
-            sync_flag = data.get('sync_flag')
 
             loan_application = LoanApplications(
                 group_id=group_id,
@@ -32,7 +31,6 @@ def loan_applications_list(request):
                 amount_needed=amount_needed,
                 loan_purpose=loan_purpose,
                 repayment_date=repayment_date,
-                sync_flag=sync_flag,
             )
             loan_application.save()
 

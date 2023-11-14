@@ -14,7 +14,6 @@ def group_profile_list(request):
         if request.method == 'POST':
             
             print("Received data:", data)
-            profile_id = data.get('id')
             groupName = data.get('groupName')
             countryOfOrigin = data.get('countryOfOrigin')
             meetingLocation = data.get('meetingLocation')
@@ -29,7 +28,6 @@ def group_profile_list(request):
             socialFund = data.get('socialFund')
 
             group_profile = GroupProfile(
-                profile_id=profile_id,
                 groupName=groupName,
                 countryOfOrigin=countryOfOrigin,
                 meetingLocation=meetingLocation,

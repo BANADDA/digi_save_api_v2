@@ -14,13 +14,11 @@ def social_list(request):
         if request.method == 'POST':
             group_id = data.get('group_id')
             social_fund = data.get('socialFund')
-            sync_flag = data.get('sync_flag')
             meeting_id = data.get('meetingId')
 
             social = Social(
                 group_id=group_id,
                 socialFund=social_fund,
-                sync_flag=sync_flag,
                 meetingId=meeting_id,
             )
             social.save()

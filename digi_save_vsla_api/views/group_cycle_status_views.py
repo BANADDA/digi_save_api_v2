@@ -14,13 +14,11 @@ def group_cycle_status_list(request):
             group = data.get('group_id')
             cycle_id = data.get('cycleId')
             is_cycle_started = data.get('is_cycle_started')
-            sync_flag = data.get('sync_flag')
 
             group_cycle_status = GroupCycleStatus(
                 group=group,
                 cycleId=cycle_id,
                 is_cycle_started=is_cycle_started,
-                sync_flag=sync_flag,
             )
             group_cycle_status.save()
 

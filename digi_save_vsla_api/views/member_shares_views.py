@@ -19,7 +19,6 @@ def member_shares_list(request):
             users_id = data.get('logged_in_user_id')
             group_id = data.get('group_id')
             cycle_id = data.get('cycle_id')
-            sync_flag = data.get('sync_flag')
 
             member_shares = MemberShares(
                 logged_in_users_id=logged_in_users_id,
@@ -29,7 +28,6 @@ def member_shares_list(request):
                 users=users_id,
                 group_id=group_id,
                 cycle_id=cycle_id,
-                sync_flag=sync_flag,
             )
             member_shares.save()
 

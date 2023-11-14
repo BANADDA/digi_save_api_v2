@@ -16,7 +16,6 @@ def loan_payments_list(request):
             loan = data.get('loan_id')
             payment_amount = data.get('payment_amount')
             payment_date = data.get('payment_date')
-            sync_flag = data.get('sync_flag')
 
             loan_payment = LoanPayments(
                 member=member,
@@ -24,7 +23,6 @@ def loan_payments_list(request):
                 loan=loan,
                 payment_amount=payment_amount,
                 payment_date=payment_date,
-                sync_flag=sync_flag,
             )
             loan_payment.save()
 
