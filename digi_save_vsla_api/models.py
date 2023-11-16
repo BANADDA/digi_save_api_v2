@@ -1,4 +1,5 @@
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.contrib import admin
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.db import models
 
 class CustomUserManager(BaseUserManager):
@@ -49,6 +50,35 @@ class Users(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.phone
+
+    class Meta:
+        verbose_name = 'User'
+        verbose_name_plural = 'Users'
+
+class ConcreteUser(Users):
+    class Meta:
+        verbose_name = 'Concrete User'
+        verbose_name_plural = 'Concrete Users'
+
+class ConcreteUserAdmin(admin.ModelAdmin):
+    # Define how you want the concrete user model to be represented in the admin
+    list_display = ('fname', 'lname', 'email', 'phone', 'is_staff', 'is_active')
+    search_fields = ('fname', 'lname', 'email', 'phone')
+    list_filter = ('is_staff', 'is_active')
+    fieldsets = (
+        (None, {'fields': ('unique_code', 'fname', 'lname', 'email', 'phone', 'sex', 'country', 'date_of_birth', 'image', 'district', 'subCounty', 'village', 'number_of_dependents', 'family_information', 'next_of_kin_name', 'next_of_kin_has_phone_number', 'next_of_kin_phone_number', 'pwd_type')}),
+        ('Permissions', {'fields': ('is_staff', 'is_active')}),
+    )
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('unique_code', 'fname', 'lname', 'email', 'phone', 'sex', 'country', 'date_of_birth', 'image', 'district', 'subCounty', 'village', 'number_of_dependents', 'family_information', 'next_of_kin_name', 'next_of_kin_has_phone_number', 'next_of_kin_phone_number', 'pwd_type', 'password1', 'password2'),
+        }),
+    )
+
+# Register the concrete user model in the admin
+admin.site.register(ConcreteUser, ConcreteUserAdmin)
+
     
     # def __str__(self):
     #     return f"{self.fname} {self.lname}"
