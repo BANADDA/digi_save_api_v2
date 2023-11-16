@@ -1,6 +1,8 @@
 # serializers.py
+from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 from .models import *
+
 
 class GroupFormSerializer(serializers.ModelSerializer):
     class Meta:
@@ -43,10 +45,21 @@ class PositionsSerializer(serializers.ModelSerializer):
         fields = '__all__'
         
 class UsersSerializer(serializers.ModelSerializer):
+    """override create method to change the password into hash."""
+    def create(self, validated_data):
+            validated_data["unique_code"] = make_password(validated_data.get("unique_code"))
+            return super(UsersSerializer, self).create(validated_data)
 
     class Meta:
         model = Users
         fields = '__all__'
+
+class LoginSerializer(serializers.ModelSerializer):
+    phone = serializers.CharField()  # Modify based on your field types
+    unique_code = serializers.CharField()  # Modify based on your field types
+    class Meta:
+            model = Users
+            fields = ['phone','unique_code']
 
 class UserLoginSerializer(serializers.ModelSerializer):
     class Meta:

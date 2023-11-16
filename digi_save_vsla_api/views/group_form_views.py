@@ -2,11 +2,18 @@
 from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
 from digi_save_vsla_api.models import AssignedPositions, ConstitutionTable, CycleSchedules, GroupForm, GroupMembers, GroupProfile, Users
 from digi_save_vsla_api.serializers import GroupFormSerializer
 
+from rest_framework.decorators import api_view,permission_classes,authentication_classes
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+
+
 @api_view(['GET', 'POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def group_form_list(request):
     print("Received data:", request.data)
     data = request.data
@@ -47,22 +54,22 @@ def group_form_list(request):
 
         if request.method == 'GET':
             group_forms = GroupForm.objects.all()
-            group_form_data = {}
-            for group_form in group_forms:
-                data = {
-                    'group_profile_id': group_form.group_profile_id,
-                    'group_id': group_form.group_id,
-                    'logged_in_user_id': group_form.logged_in_users_id,
-                    'constitution_id': group_form.constitution_id,
-                    'cycle_schedule_id': group_form.cycle_schedule_id,
-                    'group_member_id': group_form.group_member_id,
-                    'assigned_position_id': group_form.assigned_position_id,
-                }
-             # Add the serialized data to the dictionary using the table name as the key
-            group_form_data['group_form'] = group_form_data.get('group_form', []) + [data]
+            group_form_data = {'group_form': []}  # Initialize an empty list for group_form
 
-        # Return the serialized data as JSON
+            for form in group_forms:
+                data = {
+                    'group_profile_id': form.group_profile_id,
+                    'group_id': form.group_id,
+                    'logged_in_user_id': form.logged_in_users_id,
+                    'constitution_id': form.constitution_id,
+                    'cycle_schedule_id': form.cycle_schedule_id,
+                    'group_member_id': form.group_member_id,
+                    'assigned_position_id': form.assigned_position_id,
+                }
+                group_form_data['group_form'].append(data)  # Append data for each form
+
         return JsonResponse(group_form_data, safe=False)
+
 
     except Exception as e:
         return JsonResponse({

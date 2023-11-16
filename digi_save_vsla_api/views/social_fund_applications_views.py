@@ -1,12 +1,18 @@
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
 from digi_save_vsla_api.models import SocialFundApplications
 from digi_save_vsla_api.serializers import SocialFundApplicationsSerializer
 from digi_save_vsla_api.models import *
 from django.http import JsonResponse
+from rest_framework.decorators import api_view,permission_classes,authentication_classes
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+
 
 @api_view(['GET', 'POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def social_fund_applications_list(request):
     data = request.data
     print("Received data:", data.get('group_id'))

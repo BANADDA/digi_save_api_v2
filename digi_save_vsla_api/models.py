@@ -1,4 +1,57 @@
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
+
+class CustomUserManager(BaseUserManager):
+    def create_user(self, phone, password=None, **extra_fields):
+        if not phone:
+            raise ValueError('The phone field must be set')
+        user = self.model(phone=phone, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, phone, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('Superuser must have is_staff=True.')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
+        return self.create_user(phone, password, **extra_fields)
+
+class Users(AbstractBaseUser, PermissionsMixin):
+    unique_code = models.TextField(unique=True)
+    fname = models.TextField(unique=True)
+    lname = models.TextField()
+    email = models.EmailField()  
+    phone = models.TextField(unique=True)  
+    sex = models.TextField()
+    country = models.TextField()
+    date_of_birth = models.TextField()
+    image = models.TextField(default=None, blank=True, null=True)
+    district = models.TextField()
+    subCounty = models.TextField()
+    village = models.TextField()
+    number_of_dependents = models.TextField()
+    family_information = models.TextField()
+    next_of_kin_name = models.TextField()
+    next_of_kin_has_phone_number = models.IntegerField(default=None, blank=True, null=True)
+    next_of_kin_phone_number = models.TextField(default=None, blank=True, null=True)
+    pwd_type = models.TextField(default=None, blank=True, null=True)
+    
+    is_staff = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+
+    REQUIRED_FIELDS = ['unique_code', 'lname', 'phone']  
+    USERNAME_FIELD = 'fname'  
+
+    objects = CustomUserManager()
+
+    def __str__(self):
+        return self.phone
+    
+    # def __str__(self):
+    #     return f"{self.fname} {self.lname}"
 
 # Create your models here.
 class GroupProfile(models.Model):
@@ -38,28 +91,6 @@ class ConstitutionTable(models.Model):
     def __str__(self):
         return f"ConstitutionTable for Group ID: {self.group_id}  - Has Constitution: {self.hasConstitution}"
 
-class Users(models.Model):
-    unique_code = models.TextField()
-    fname = models.TextField()
-    lname = models.TextField()
-    email = models.TextField(default=None, blank=True, null=True)
-    phone = models.TextField()
-    sex = models.TextField()
-    country = models.TextField()
-    date_of_birth = models.TextField()
-    image = models.TextField(default=None, blank=True, null=True)
-    district = models.TextField()
-    subCounty = models.TextField()
-    village = models.TextField()
-    number_of_dependents = models.TextField()
-    family_information = models.TextField()
-    next_of_kin_name = models.TextField()
-    next_of_kin_has_phone_number = models.IntegerField(default=None, blank=True, null=True)
-    next_of_kin_phone_number = models.TextField(default=None, blank=True, null=True)
-    pwd_type = models.TextField(default=None, blank=True, null=True)
-    
-    def __str__(self):
-        return f"{self.fname} {self.lname}"
 
 class GroupMembers(models.Model):
     user_id = models.IntegerField(default=None, blank=True, null=True)
@@ -88,12 +119,12 @@ class Positions(models.Model):
         return self.name
     
 class AssignedPositions(models.Model):
-    position_id = models.IntegerField(default=None, blank=True, null=True)
+    position_name = models.TextField(default=None, blank=True, null=True)
     member_id = models.IntegerField(default=None, blank=True, null=True)
     group_id = models.IntegerField(default=None, blank=True, null=True)
     
     def __str__(self):
-     return f"Assigned position for Group Id{self.position_id}"
+     return f"Assigned position for Group Id{self.group_id}"
 
 
 class GroupForm(models.Model):

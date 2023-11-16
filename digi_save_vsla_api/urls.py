@@ -1,6 +1,7 @@
 from django.urls import path, include
 from digi_save_vsla_api.views.active_cycle_meeting_views import active_cycle_meeting_detail, active_cycle_meeting_list
 from digi_save_vsla_api.views.assigned_positions_views import assigned_positions_detail, assigned_positions_list
+from digi_save_vsla_api.views.auth_view import login_with_phone_unique_code
 from digi_save_vsla_api.views.constitution_table_views import constitution_table_detail, constitution_table_list
 from digi_save_vsla_api.views.cycle_meeting_views import cycle_meeting_detail, cycle_meeting_list
 from digi_save_vsla_api.views.cycle_schedules_views import cycle_schedules_detail, cycle_schedules_list
@@ -28,8 +29,6 @@ from digi_save_vsla_api.views.social_fund_applications_views import social_fund_
 from digi_save_vsla_api.views.social_views import social_detail, social_list
 from digi_save_vsla_api.views.users_views import users_detail, users_list
 from digi_save_vsla_api.views.welfare_account_views import welfare_account_detail, welfare_account_list
-from digi_save_vsla_api.views.auth_view import login_with_phone_code
-
 urlpatterns = [
     # GroupProfile views
     path('group_profiles/', group_profile_list, name='group_profile_list'),
@@ -42,7 +41,7 @@ urlpatterns = [
     # Users views
     path('users/', users_list, name='users_list'),
     path('users/<int:pk>/', users_detail, name='users_detail'),
-    path('login-with-phone-code/', login_with_phone_code, name='login_with_phone_code'),
+    path('login-with-phone-code/', login_with_phone_unique_code, name='login_with_phone_code'),
 
     # GroupMembers views
     path('group_members/', group_members_list, name='group_members_list'),

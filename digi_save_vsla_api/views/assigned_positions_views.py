@@ -2,18 +2,25 @@
 from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
 from digi_save_vsla_api.models import AssignedPositions, GroupMembers, GroupProfile, Positions
 from digi_save_vsla_api.serializers import AssignedPositionsSerializer
 
+from rest_framework.decorators import api_view,permission_classes,authentication_classes
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+
+
 @api_view(['GET', 'POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def assigned_positions_list(request):
     print("Received data:", request.data)
     data = request.data
 
     try:
         if request.method == 'POST':
-            positions_id = data.get('position_id')
+            position_name = data.get('position_name')
             members_id = data.get('member_id')
             group_id = data.get('group_id')
 
@@ -24,7 +31,7 @@ def assigned_positions_list(request):
 
             assigned_position = AssignedPositions(
                 position_id=members_id,
-                member_id=positions_id,
+                member_id=position_name,
                 group_id=group_id,
             )
             assigned_position.save()
@@ -36,16 +43,14 @@ def assigned_positions_list(request):
 
         if request.method == 'GET':
             assigned_positions = AssignedPositions.objects.all()
-            assigned_positions_data = {}
+            assigned_positions_data = {'assigned_positions': []}
             for assigned_position in assigned_positions:
                 data = {
-                    'position_id': assigned_position.position_id,
+                    'position_name': assigned_position.position_name,
                     'member_id': assigned_position.member_id,
                     'group_id': assigned_position.group_id,
                 }
-
-                assigned_positions_data['assigned_positions'] = assigned_positions_data.get('assigned_positions', []) + [data]
-
+                assigned_positions_data['assigned_positions'].append(data)
         # Return the serialized data as JSON
         return JsonResponse(assigned_positions_data, safe=False)
 
@@ -57,6 +62,7 @@ def assigned_positions_list(request):
     
     
 @api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes([IsAuthenticated])
 def assigned_positions_detail(request, pk):
     try:
         assigned_position = AssignedPositions.objects.get(pk=pk)

@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from digi_save_vsla_api.models import Users
 from digi_save_vsla_api.serializers import UsersSerializer
+from rest_framework.authtoken.models import Token
 
 @api_view(['GET', 'POST'])
 def users_list(request):
@@ -52,6 +53,19 @@ def users_list(request):
                 pwd_type=pwd_type,
             )
             user.save()
+            try:
+                token, created = Token.objects.get_or_create(user=user)
+                print('User: ',user)
+                print('User token: ',token)
+                if created:
+                        token.user = user
+                        token.save()
+                        print('User token: ',token)
+            except Exception as e:
+                return JsonResponse({
+                    'status': 'error in token',
+                    'message': str(e),
+                }, status=500)
 
             return JsonResponse({
                 'status': 'success',
@@ -63,6 +77,7 @@ def users_list(request):
             user_data = []
             for user in users:
                 user_data.append({
+                    'id':user.id,
                     'unique_code': user.unique_code,
                     'fname': user.fname,
                     'lname': user.lname,
