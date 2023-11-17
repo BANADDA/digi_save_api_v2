@@ -73,6 +73,7 @@ class ConcreteUser(Users):
     class Meta:
         verbose_name = 'Concrete User'
         verbose_name_plural = 'Concrete Users'
+        proxy = True
 
 class ConcreteUserAdmin(admin.ModelAdmin):
     # Define how you want the concrete user model to be represented in the admin
