@@ -51,6 +51,20 @@ class Users(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.phone
 
+    # Adding related_name attributes to resolve conflicts
+    groups = models.ManyToManyField(
+        'auth.Group',
+        verbose_name='groups',
+        blank=True,
+        related_name='user_groups'
+    )
+    user_permissions = models.ManyToManyField(
+        'auth.Permission',
+        verbose_name='user permissions',
+        blank=True,
+        related_name='user_permissions'
+    )
+
     class Meta:
         verbose_name = 'User'
         verbose_name_plural = 'Users'
