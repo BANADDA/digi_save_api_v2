@@ -2,8 +2,8 @@ from django.contrib import admin
 from .models import *
 from rest_framework.authtoken.models import Token
 
-# Token auth
-# admin.site.register(Token)
+# # Token auth
+admin.site.register(Token)
 
 # Register your models here.
 admin.site.register(GroupProfile)
