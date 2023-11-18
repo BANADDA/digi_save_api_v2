@@ -1,4 +1,4 @@
-from django.contrib.auth.backends import BaseBackend as  auth_backends
+from django.contrib.auth.backends import BaseBackend as auth_backends
 from digi_save_vsla_api.models import Users
 class PhoneCodeBackend(auth_backends):
     def authenticate(self, request, phone=None, unique_code=None):
