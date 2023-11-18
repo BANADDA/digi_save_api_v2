@@ -118,11 +118,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTHENTICATION_BACKENDS = [
-    'digi_save_vsla_api.backends.PhoneCodeBackend',  # Replace 'your_app' with your app's name
-    'django.contrib.auth.backends.ModelBackend',  # Retain Django's default backend
-    # Add other authentication backends as needed
-]
+# AUTHENTICATION_BACKENDS = [
+#     'digi_save_vsla_api.backends.PhoneCodeBackend',  # Replace 'your_app' with your app's name
+#     'django.contrib.auth.backends.ModelBackend',  # Retain Django's default backend
+#     # Add other authentication backends as needed
+# ]
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
