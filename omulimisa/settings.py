@@ -83,7 +83,7 @@ WSGI_APPLICATION = 'omulimisa.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'digisavev2',       # Database name
+        'NAME': 'digisave',       # Database name
         'USER': 'postgres',         # Your PostgreSQL username
         'PASSWORD': 'admin123',     # Your PostgreSQL password
         'HOST': 'localhost',        # Assuming your PostgreSQL is hosted locally
