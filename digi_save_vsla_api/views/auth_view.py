@@ -5,8 +5,6 @@ from rest_framework import status
 from digi_save_vsla_api.auth import PhoneCodeBackend
 from digi_save_vsla_api.serializers import LoginSerializer
 from rest_framework.authtoken.models import Token
-from django.contrib.auth import get_user_model
-from django.contrib.auth import authenticate
 
 @csrf_exempt
 def login_with_phone_unique_code(request):
@@ -24,12 +22,21 @@ def login_with_phone_unique_code(request):
             print('User code:', code)
             
             if user is not None:
-                # user = get_user_model().objects.get(id=user.id)
-                token, created = Token.objects.get_or_create(user=user)
-                if created:
-                    token.user = user
-                    token.save()
-                    print('User token: ',token)
+                try:
+                  token, created = Token.objects.get_or_create(user=user)
+                  print('User: ',user)
+                  print('User token: ',token)
+                  if created:
+                        token.user = user
+                        token.save()
+                        print('User token: ',token)
+                except Exception as e:
+                   return JsonResponse({
+                    'status': 'error in token',
+                    'message': str(e),
+                  }, status=500)
+
+
 
                 response_data = {
                     "status": status.HTTP_200_OK,

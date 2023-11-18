@@ -82,10 +82,22 @@ WSGI_APPLICATION = 'omulimisa.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'digisavev2',       # Database name
+        'USER': 'postgres',         # Your PostgreSQL username
+        'PASSWORD': 'admin123',     # Your PostgreSQL password
+        'HOST': 'localhost',        # Assuming your PostgreSQL is hosted locally
+        'PORT': '5433',             # PostgreSQL default port
+        
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 
 # Password validation
@@ -106,6 +118,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = [
+    'digi_save_vsla_api.backends.PhoneCodeBackend',  # Replace 'your_app' with your app's name
+    'django.contrib.auth.backends.ModelBackend',  # Retain Django's default backend
+    # Add other authentication backends as needed
+]
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
@@ -128,6 +145,8 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = 'digi_save_vsla_api.Users'
 
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [

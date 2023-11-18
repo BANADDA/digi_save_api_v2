@@ -1,16 +1,13 @@
-from django.contrib.auth import get_user_model
-from rest_framework.exceptions import AuthenticationFailed
-
+from django.contrib.auth.backends import BaseBackend
 from digi_save_vsla_api.models import Users
-
-class PhoneCodeBackend:
+class PhoneCodeBackend(BaseBackend):
     def authenticate(self, request, phone=None, unique_code=None):
         try:
             user = Users.objects.get(phone=phone, unique_code=unique_code)
+            print('Object type:', type(user))
+            return user  # Return the User object if found
         except Users.DoesNotExist:
-            raise AuthenticationFailed('User not found')
-
-        return user
+            return None  # If no user found, return None
 
     def get_user(self, user_id):
         try:

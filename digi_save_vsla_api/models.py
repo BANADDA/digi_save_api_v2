@@ -44,55 +44,70 @@ class Users(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
 
     REQUIRED_FIELDS = ['unique_code', 'lname', 'phone']  
-    USERNAME_FIELD = 'fname'  
+    USERNAME_FIELD = 'fname' 
+    
+    groups = models.ManyToManyField(
+        'auth.Group',
+        verbose_name='groups',
+        related_name='custom_user_groups_test',  # Unique related name for groups
+        blank=True,
+        help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.',
+    )
+    user_permissions = models.ManyToManyField(
+        'auth.Permission',
+        verbose_name='user permissions',
+        related_name='custom_user_permissions_test',  # Unique related name for user permissions
+        blank=True,
+        help_text='Specific permissions for this user.',
+    )
 
-    objects = CustomUserManager()
+    objects = CustomUserManager() 
 
     def __str__(self):
         return self.phone
 
     # Adding related_name attributes to resolve conflicts
-    groups = models.ManyToManyField(
-        'auth.Group',
-        verbose_name='groups',
-        blank=True,
-        related_name='user_groups'
-    )
-    user_permissions = models.ManyToManyField(
-        'auth.Permission',
-        verbose_name='user permissions',
-        blank=True,
-        related_name='user_permissions'
-    )
+#     groups = models.ManyToManyField(
+#         'auth.Group',
+#         verbose_name='groups',
+#         blank=True,
+#         related_name='user_groups'
+#     )
+#     user_permissions = models.ManyToManyField(
+#         'auth.Permission',
+#         verbose_name='user permissions',
+#         blank=True,
+#         related_name='user_permissions'
+#     )
 
-    class Meta:
-        verbose_name = 'User'
-        verbose_name_plural = 'Users'
+#     class Meta:
+#         verbose_name = 'User'
+#         verbose_name_plural = 'Users'
 
-class ConcreteUser(Users):
-    class Meta:
-        verbose_name = 'Concrete User'
-        verbose_name_plural = 'Concrete Users'
-        proxy = True
+# class ConcreteUser(Users):
+#     class Meta:
+#         verbose_name = 'Concrete User'
+#         verbose_name_plural = 'Concrete Users'
+#         proxy = True
 
-class ConcreteUserAdmin(admin.ModelAdmin):
-    # Define how you want the concrete user model to be represented in the admin
-    list_display = ('fname', 'lname', 'email', 'phone', 'is_staff', 'is_active')
-    search_fields = ('fname', 'lname', 'email', 'phone')
-    list_filter = ('is_staff', 'is_active')
-    fieldsets = (
-        (None, {'fields': ('unique_code', 'fname', 'lname', 'email', 'phone', 'sex', 'country', 'date_of_birth', 'image', 'district', 'subCounty', 'village', 'number_of_dependents', 'family_information', 'next_of_kin_name', 'next_of_kin_has_phone_number', 'next_of_kin_phone_number', 'pwd_type')}),
-        ('Permissions', {'fields': ('is_staff', 'is_active')}),
-    )
-    add_fieldsets = (
-        (None, {
-            'classes': ('wide',),
-            'fields': ('unique_code', 'fname', 'lname', 'email', 'phone', 'sex', 'country', 'date_of_birth', 'image', 'district', 'subCounty', 'village', 'number_of_dependents', 'family_information', 'next_of_kin_name', 'next_of_kin_has_phone_number', 'next_of_kin_phone_number', 'pwd_type', 'password1', 'password2'),
-        }),
-    )
+# class ConcreteUserAdmin(admin.ModelAdmin):
+#     # Define how you want the concrete user model to be represented in the admin
+#     list_display = ('fname', 'lname', 'email', 'phone', 'is_staff', 'is_active')
+#     search_fields = ('fname', 'lname', 'email', 'phone')
+#     list_filter = ('is_staff', 'is_active')
+#     fieldsets = (
+#         (None, {'fields': ('unique_code', 'fname', 'lname', 'email', 'phone', 'sex', 'country', 'date_of_birth', 'image', 'district', 'subCounty', 'village', 'number_of_dependents', 'family_information', 'next_of_kin_name', 'next_of_kin_has_phone_number', 'next_of_kin_phone_number', 'pwd_type')}),
+#         ('Permissions', {'fields': ('is_staff', 'is_active')}),
+#     )
+#     add_fieldsets = (
+#         (None, {
+#             'classes': ('wide',),
+#             'fields': ('unique_code', 'fname', 'lname', 'email', 'phone', 'sex', 'country', 'date_of_birth', 'image', 'district', 'subCounty', 'village', 'number_of_dependents', 'family_information', 'next_of_kin_name', 'next_of_kin_has_phone_number', 'next_of_kin_phone_number', 'pwd_type', 'password1', 'password2'),
+#         }),
+#     )
 
-# Register the concrete user model in the admin
-admin.site.register(ConcreteUser, ConcreteUserAdmin)
+# # Register the concrete user model in the admin
+# admin.site.register(ConcreteUser, ConcreteUserAdmin)
 
     
     # def __str__(self):
