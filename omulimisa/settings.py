@@ -96,7 +96,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'URL': 'postgresql://postgres:5d6a4FbC6DDd5b14EcdB5gBBbC*5FfGB@roundhouse.proxy.rlwy.net:28241/railway',
-        'NAME': 'railway',
+        'NAME': 'postgres',
         'USER': 'postgres',
         'PASSWORD': '5d6a4FbC6DDd5b14EcdB5gBBbC*5FfGB',
         'HOST': 'PGHOST',
