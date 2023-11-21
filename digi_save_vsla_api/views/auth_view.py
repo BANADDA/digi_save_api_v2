@@ -96,4 +96,8 @@ def login_with_phone_unique_code(request):
         else:
             return JsonResponse({'status': 'Authentication failed'}, status=401)
     else:
-        return JsonResponse({'status': 'Invalid Request Method'}, status=400)
+        response = {
+            "status": status.HTTP_405_METHOD_NOT_ALLOWED,
+            "message": "Method Not Allowed",
+        }
+        return JsonResponse(response, status=status.HTTP_405_METHOD_NOT_ALLOWED)
