@@ -95,12 +95,12 @@ WSGI_APPLICATION = 'omulimisa.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'URL': 'postgresql://postgres:5d6a4FbC6DDd5b14EcdB5gBBbC*5FfGB@roundhouse.proxy.rlwy.net:28241/railway',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': '5d6a4FbC6DDd5b14EcdB5gBBbC*5FfGB',
-        'HOST': 'PGHOST',
-        'PORT': 28241,
+        'URL': 'postgres://banadda:5aFHlvTu5kobEkBABh3Jod0U8psdtuaB@dpg-cle6nlfgsrdc739psl30-a.oregon-postgres.render.com/omulimisa',
+        'NAME': 'omulimisa',
+        'USER': 'banadda',
+        'PASSWORD': '5aFHlvTu5kobEkBABh3Jod0U8psdtuaB',
+        'HOST': 'dpg-cle6nlfgsrdc739psl30-a',
+        'PORT': 5432,
     }
 }
 
