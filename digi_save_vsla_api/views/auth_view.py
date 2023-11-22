@@ -20,9 +20,7 @@ def login_with_phone_unique_code(request):
         if user:
             try:
                 # Generate Token for the authenticated user
-                token, _ = Token.objects.get_or_create(user=user)
-                token.user = user
-                token.save()
+                token, created = Token.objects.get_or_create(user=user)
                 print('User token:', token)
             except Exception as e:
                 return JsonResponse({
