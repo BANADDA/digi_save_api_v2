@@ -92,24 +92,24 @@ WSGI_APPLICATION = 'omulimisa.wsgi.application'
 #     }
 # }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'URL': 'postgres://banadda:5aFHlvTu5kobEkBABh3Jod0U8psdtuaB@dpg-cle6nlfgsrdc739psl30-a.oregon-postgres.render.com/omulimisa',
-        'NAME': 'omulimisa',
-        'USER': 'banadda',
-        'PASSWORD': '5aFHlvTu5kobEkBABh3Jod0U8psdtuaB',
-        'HOST': 'dpg-cle6nlfgsrdc739psl30-a',
-        'PORT': 5432,
-    }
-}
-
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'URL': 'postgresql://postgres:5d6a4FbC6DDd5b14EcdB5gBBbC*5FfGB@roundhouse.proxy.rlwy.net:28241/railway',
+#         'NAME': 'postgres',
+#         'USER': 'postgres',
+#         'PASSWORD': '5d6a4FbC6DDd5b14EcdB5gBBbC*5FfGB',
+#         'HOST': 'PGHOST',
+#         'PORT': 28241,
 #     }
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 
 
 # Password validation
@@ -130,11 +130,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# AUTHENTICATION_BACKENDS = [
-#     'digi_save_vsla_api.backends.PhoneCodeBackend',  # Replace 'your_app' with your app's name
-#     'django.contrib.auth.backends.ModelBackend',  # Retain Django's default backend
-#     # Add other authentication backends as needed
-# ]
+AUTHENTICATION_BACKENDS = [
+    # 'digi_save_vsla_api.custom_auth_backends.PhoneCodeBackend',  # Replace 'your_app' with your app's name
+    'django.contrib.auth.backends.ModelBackend',  # Retain Django's default backend
+    # Add other authentication backends as needed
+]
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/

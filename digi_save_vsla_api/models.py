@@ -1,69 +1,39 @@
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-class CustomUserManager(BaseUserManager):
-    def create_user(self, phone, password=None, **extra_fields):
-        if not phone:
-            raise ValueError('The phone field must be set')
-        user = self.model(phone=phone, **extra_fields)
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
-
-    def create_superuser(self, phone, password=None, **extra_fields):
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
-        if extra_fields.get('is_staff') is not True:
-            raise ValueError('Superuser must have is_staff=True.')
-        if extra_fields.get('is_superuser') is not True:
-            raise ValueError('Superuser must have is_superuser=True.')
-        return self.create_user(phone, password, **extra_fields)
-
-class Users(AbstractBaseUser, PermissionsMixin):
-    unique_code = models.TextField(unique=True)
-    fname = models.TextField(unique=True)
-    lname = models.TextField()
-    email = models.EmailField()  
-    phone = models.TextField(unique=True)  
-    sex = models.TextField()
-    country = models.TextField()
-    date_of_birth = models.TextField()
-    image = models.TextField(default=None, blank=True, null=True)
-    district = models.TextField()
-    subCounty = models.TextField()
-    village = models.TextField()
-    number_of_dependents = models.TextField()
+class Users(AbstractUser):
+    unique_code = models.CharField(max_length=100)
+    fname = models.CharField(max_length=30)
+    lname = models.CharField(max_length=30)
+    email = models.EmailField()
+    phone = models.CharField(max_length=15, unique=True)
+    sex = models.CharField(max_length=10)
+    country = models.CharField(max_length=50)
+    date_of_birth = models.DateField(default='2000-01-01')
+    image = models.CharField(max_length=500)
+    district = models.CharField(max_length=50)
+    subCounty = models.CharField(max_length=50)
+    village = models.CharField(max_length=50)
+    number_of_dependents = models.IntegerField(default=0)
     family_information = models.TextField()
-    next_of_kin_name = models.TextField()
-    next_of_kin_has_phone_number = models.IntegerField(default=None, blank=True, null=True)
-    next_of_kin_phone_number = models.TextField(default=None, blank=True, null=True)
-    pwd_type = models.TextField(default=None, blank=True, null=True)
+    next_of_kin_name = models.CharField(max_length=100)
+    next_of_kin_has_phone_number = models.BooleanField(default=False)
+    next_of_kin_phone_number = models.CharField(max_length=15, default=None, blank=True, null=True)
+    pwd_type = models.CharField(max_length=20, default=None, blank=True, null=True)
     
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
 
-    REQUIRED_FIELDS = ['unique_code', 'lname', 'phone']  
-    USERNAME_FIELD = 'fname' 
-    
-    groups = models.ManyToManyField(
-        'auth.Group',
-        verbose_name='groups',
-        related_name='custom_user_groups_test',  # Unique related name for groups
-        blank=True,
-        help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.',
-    )
-    user_permissions = models.ManyToManyField(
-        'auth.Permission',
-        verbose_name='user permissions',
-        related_name='custom_user_permissions_test',  # Unique related name for user permissions
-        blank=True,
-        help_text='Specific permissions for this user.',
-    )
-
-    objects = CustomUserManager() 
+    def save(self, *args, **kwargs):
+        if self.unique_code:
+            # Hash the unique_code field before saving
+            self.unique_code = make_password(self.unique_code)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.phone
+
 class GroupProfile(models.Model):
     groupName = models.CharField(max_length=255, default=None, blank=True, null=True)
     countryOfOrigin = models.CharField(max_length=255, default=None, blank=True, null=True)
