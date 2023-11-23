@@ -29,7 +29,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-
+#CORS_ORIGIN_ALLOW_ALL = True
 
 # Application definition
 
@@ -43,18 +43,56 @@ INSTALLED_APPS = [
     'digi_save_vsla_api',
     'rest_framework',
     'rest_framework.authtoken',
+    'corsheaders',
     
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'corsheaders.middleware.CorsPostCsrfMiddleware',
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+   
 ]
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ALLOWED_ORIGINS = ['*']
+
+CSRF_TRUSTED_ORIGINS = ['*']
+
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ORIGIN_WHITELIST = [
+     'https://admin-digisave.m-omulimisa.com'
+]
+
+
+CORS_ALLOW_METHODS = [
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+]
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+]
+
 
 ROOT_URLCONF = 'omulimisa.urls'
 
@@ -79,25 +117,34 @@ WSGI_APPLICATION = 'omulimisa.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'digisave',       # Database name
-        'USER': 'postgres',         # Your PostgreSQL username
-        'PASSWORD': 'admin123',     # Your PostgreSQL password
-        'HOST': 'localhost',        # Assuming your PostgreSQL is hosted locally
-        'PORT': '5433',             # PostgreSQL default port
-        
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'digi_save',
+        'USER': 'digisaveuser',
+        'PASSWORD': 'L!26YmPJUDK}C%zs5_u8xv',
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
-
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'URL': 'postgresql://postgres:5d6a4FbC6DDd5b14EcdB5gBBbC*5FfGB@roundhouse.proxy.rlwy.net:28241/railway',
+#         'NAME': 'postgres',
+#         'USER': 'postgres',
+#         'PASSWORD': '5d6a4FbC6DDd5b14EcdB5gBBbC*5FfGB',
+#         'HOST': 'PGHOST',
+#         'PORT': 28241,
 #     }
 # }
+
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': BASE_DIR / 'db.sqlite3',
+#    }
+#}
 
 
 # Password validation
@@ -118,11 +165,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# AUTHENTICATION_BACKENDS = [
-#     'digi_save_vsla_api.backends.PhoneCodeBackend',  # Replace 'your_app' with your app's name
-#     'django.contrib.auth.backends.ModelBackend',  # Retain Django's default backend
-#     # Add other authentication backends as needed
-# ]
+AUTHENTICATION_BACKENDS = [
+    # 'digi_save_vsla_api.custom_auth_backends.PhoneCodeBackend',  # Replace 'your_app' with your app's name
+    'django.contrib.auth.backends.ModelBackend',  # Retain Django's default backend
+    # Add other authentication backends as needed
+]
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
@@ -153,8 +200,10 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.BrowsableAPIRenderer',
         'rest_framework.renderers.JSONRenderer',
     ],
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.BasicAuthentication',
-    ],
+   'DEFAULT_AUTHENTICATION_CLASSES': [
+    'rest_framework.authentication.TokenAuthentication',
+   ],
+   'DEFAULT_PERMISSION_CLASSES': [
+    'rest_framework.permissions.IsAuthenticated',
+   ]
 }
-

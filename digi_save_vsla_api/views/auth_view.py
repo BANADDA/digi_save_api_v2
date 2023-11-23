@@ -13,8 +13,8 @@ def login_with_phone_unique_code(request):
         serializer = LoginSerializer(data=request.POST)
         
         if serializer.is_valid():
-            phone = serializer.validated_data["phone"]
-            code = serializer.validated_data["unique_code"]
+            phone = request.GET.get("phone")
+            code = request.GET.get("unique_code")
             backend = PhoneCodeBackend()
             user = backend.authenticate(request=request, phone=phone, unique_code=code)
             print('User object: ', user)
