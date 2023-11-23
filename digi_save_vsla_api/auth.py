@@ -1,17 +1,13 @@
-from django.contrib.auth.backends import ModelBackend
-from digi_save_vsla_api.models import Users
+from django.contrib.auth.backends import BaseBackend
+from django.contrib.auth import get_user_model
+from django.contrib.auth.hashers import check_password
 
-class PhoneCodeBackend(ModelBackend):
-    def authenticate(self, request, phone=None, unique_code=None):
+class PhoneCodeBackend(BaseBackend):
+    def authenticate(self, request, phone=None, unique_code=None, **kwargs):
+        User = get_user_model()
         try:
-            user = Users.objects.get(phone=phone, unique_code=unique_code)
-            print('Object type:', type(user))
-            return user  # Return the User object if found
-        except Users.DoesNotExist:
-            return None  # If no user found, return None
-
-    def get_user(self, user_id):
-        try:
-            return Users.objects.get(pk=user_id)
-        except Users.DoesNotExist:
+            user = User.objects.get(phone=phone)
+            if check_password(unique_code, user.unique_code):
+                return user
+        except User.DoesNotExist:
             return None

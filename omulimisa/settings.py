@@ -117,34 +117,25 @@ WSGI_APPLICATION = 'omulimisa.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'digi_save',
-        'USER': 'digisaveuser',
-        'PASSWORD': 'L!26YmPJUDK}C%zs5_u8xv',
-        'HOST': 'localhost',
-        'PORT': '',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'digisave',       # Database name
+        'USER': 'postgres',         # Your PostgreSQL username
+        'PASSWORD': 'admin123',     # Your PostgreSQL password
+        'HOST': 'localhost',        # Assuming your PostgreSQL is hosted locally
+        'PORT': '5433',             # PostgreSQL default port
+        
     }
 }
+
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'URL': 'postgresql://postgres:5d6a4FbC6DDd5b14EcdB5gBBbC*5FfGB@roundhouse.proxy.rlwy.net:28241/railway',
-#         'NAME': 'postgres',
-#         'USER': 'postgres',
-#         'PASSWORD': '5d6a4FbC6DDd5b14EcdB5gBBbC*5FfGB',
-#         'HOST': 'PGHOST',
-#         'PORT': 28241,
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
-
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.sqlite3',
-#        'NAME': BASE_DIR / 'db.sqlite3',
-#    }
-#}
 
 
 # Password validation
