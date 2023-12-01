@@ -16,46 +16,39 @@ class District(models.Model):
 class County(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     name = models.CharField(max_length=255,default=None)
-    country = models.ForeignKey(Country, on_delete=models.CASCADE)
-    country = models.ForeignKey(District, on_delete=models.CASCADE)
+    district = models.ForeignKey(District, on_delete=models.CASCADE)
     
 class Subcounty(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     name = models.CharField(max_length=255,default=None)
-    country = models.ForeignKey(Country, on_delete=models.CASCADE)
-    country = models.ForeignKey(District, on_delete=models.CASCADE)
-    country = models.ForeignKey(County, on_delete=models.CASCADE)
+    county = models.ForeignKey(County, on_delete=models.CASCADE)
     
 class Village(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     name = models.CharField(max_length=255,default=None)
-    country = models.ForeignKey(Country, on_delete=models.CASCADE)
-    country = models.ForeignKey(District, on_delete=models.CASCADE)
-    country = models.ForeignKey(County, on_delete=models.CASCADE)
-    country = models.ForeignKey(Subcounty, on_delete=models.CASCADE)
+    sub_country = models.ForeignKey(Subcounty, on_delete=models.CASCADE)
 
 class Users(AbstractUser):
-    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, blank=True, unique=True)
     unique_code = models.CharField(max_length=100)
     fname = models.CharField(max_length=30)
     lname = models.CharField(max_length=30)
     email = models.EmailField()
     phone = models.CharField(max_length=15, unique=True)
     sex = models.CharField(max_length=10)
-    country = models.CharField(max_length=50)
-<<<<<<< HEAD
+    
+
+class UserProfiles(AbstractUser):
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, blank=True, unique=True)
+    user_id = models.OneToOneField(Users, on_delete=models.CASCADE, blank=True, unique=True)
+    
     date_of_birth = models.DateField(auto_now=True, blank=True, null=True)
     image = models.TextField(default=None, blank=True, null=True)
+    
+    country = models.ForeignKey(Country, on_delete=models.CASCADE,  blank=True, null=True)
     district = models.ForeignKey(District, on_delete=models.CASCADE,  blank=True, null=True)
     subCounty = models.ForeignKey(Subcounty, on_delete=models.CASCADE,  blank=True, null=True)
     village = models.ForeignKey(Village, on_delete=models.CASCADE,  blank=True, null=True)
-=======
-    date_of_birth = models.TextField(default='2000-01-01', blank=True, null=True)
-    image = models.TextField(default=None, blank=True, null=True)
-    district = models.CharField(max_length=50)
-    subCounty = models.CharField(max_length=50)
-    village = models.CharField(max_length=50)
->>>>>>> 4b6b8952f73da9cc133090176c901a3e3a7309ad
+
     number_of_dependents = models.IntegerField(default=0)
     family_information = models.TextField()
     next_of_kin_name = models.CharField(max_length=100)
@@ -117,7 +110,7 @@ class ConstitutionTable(models.Model):
 
 class GroupMembers(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, blank=True, unique=True)
-    user_id = models.ForeignKey(Users, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(UserProfiles, on_delete=models.CASCADE)
     group_id = models.ForeignKey(GroupProfile, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -147,7 +140,7 @@ class Positions(models.Model):
 class AssignedPositions(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, blank=True, unique=True)
     position_name = models.TextField(default=None, blank=True, null=True)
-    member_id = models.ForeignKey(GroupMembers, on_delete=models.CASCADE)
+    member_id = models.ForeignKey(UserProfiles, on_delete=models.CASCADE)
     group_id = models.ForeignKey(GroupProfile, on_delete=models.CASCADE)
     
     def __str__(self):
@@ -161,7 +154,7 @@ class GroupForm(models.Model):
     logged_in_users_id = models.ForeignKey(Users, on_delete=models.CASCADE)
     constitution_id = models.ForeignKey(ConstitutionTable, on_delete=models.CASCADE)
     cycle_schedule_id = models.ForeignKey(CycleSchedules, on_delete=models.CASCADE)
-    group_member_id = models.ForeignKey(GroupMembers, on_delete=models.CASCADE)
+    group_member_id = models.ForeignKey(UserProfiles, on_delete=models.CASCADE)
     assigned_position_id = models.ForeignKey(Positions, on_delete=models.CASCADE)
     
     def __str__(self):
@@ -181,7 +174,7 @@ class SavingsAccount(models.Model):
 
 class GroupFees(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, blank=True, unique=True)
-    member = models.ForeignKey(GroupMembers, on_delete=models.CASCADE)
+    member = models.ForeignKey(UserProfiles, on_delete=models.CASCADE)
     group_id = models.ForeignKey(GroupForm, on_delete=models.CASCADE)
     registration_fee = models.FloatField()
     
@@ -247,7 +240,7 @@ class MemberShares(models.Model):
     sharePurchases = models.TextField()
     
     meeting = models.ForeignKey(Meeting, on_delete=models.CASCADE)
-    users = models.ForeignKey(Users,  on_delete=models.CASCADE, related_name='group_member')
+    users = models.ForeignKey(UserProfiles,  on_delete=models.CASCADE, related_name='group_member')
     group_id = models.ForeignKey(GroupForm, on_delete=models.CASCADE)
     cycle_id = models.ForeignKey(CycleMeeting, on_delete=models.CASCADE)
     
@@ -301,7 +294,7 @@ class LoanApplications(models.Model):
     meeting_id = models.ForeignKey(Meeting, on_delete=models.CASCADE)
     submission_date = models.DateField(auto_now=True, blank=True)
     loan_applicant = models.TextField()
-    group_member = models.ForeignKey(GroupMembers, on_delete=models.CASCADE)
+    group_member = models.ForeignKey(UserProfiles, on_delete=models.CASCADE)
     amount_needed = models.FloatField()
     loan_purpose = models.TextField()
     repayment_date = models.DateField(auto_now=True, blank=True)
@@ -353,7 +346,7 @@ class PaymentInfo(models.Model):
     group = models.ForeignKey(GroupForm, on_delete=models.CASCADE)
     cycle_id = models.ForeignKey(CycleMeeting, on_delete=models.CASCADE)
     meeting_id = models.IntegerField(default=None, blank=True, null=True)
-    member_id = models.ForeignKey(GroupMembers, on_delete=models.CASCADE)
+    member_id = models.ForeignKey(UserProfiles, on_delete=models.CASCADE)
     payment_amount = models.FloatField()
     payment_date = models.TextField()
     
@@ -363,7 +356,7 @@ class PaymentInfo(models.Model):
 
 class Fines(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, blank=True, unique=True)
-    memberId = models.ForeignKey(GroupMembers, on_delete=models.CASCADE)
+    memberId = models.ForeignKey(UserProfiles, on_delete=models.CASCADE)
     amount = models.IntegerField()
     reason = models.TextField()
     groupId = models.ForeignKey(GroupForm, on_delete=models.CASCADE)
@@ -386,7 +379,7 @@ class GroupCycleStatus(models.Model):
 
 class Loans(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, blank=True, unique=True)
-    member = models.ForeignKey(GroupMembers, on_delete=models.CASCADE)
+    member = models.ForeignKey(UserProfiles, on_delete=models.CASCADE)
     loan_applicant = models.TextField()
     group = models.ForeignKey(GroupForm, on_delete=models.CASCADE)
     loan_purpose = models.TextField()
@@ -402,7 +395,7 @@ class Loans(models.Model):
 
 class LoanDisbursement(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, blank=True, unique=True)
-    member = models.ForeignKey(GroupMembers, on_delete=models.CASCADE)
+    member = models.ForeignKey(UserProfiles, on_delete=models.CASCADE)
     group = models.ForeignKey(GroupForm, on_delete=models.CASCADE)
     cycleId = models.ForeignKey(CycleMeeting, on_delete=models.CASCADE)
     loan = models.IntegerField(default=None, blank=True, null=True)
@@ -415,7 +408,7 @@ class LoanDisbursement(models.Model):
 
 class LoanPayments(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, blank=True, unique=True)
-    member = models.ForeignKey(GroupMembers, on_delete=models.CASCADE)
+    member = models.ForeignKey(UserProfiles, on_delete=models.CASCADE)
     group = models.ForeignKey(GroupForm, on_delete=models.CASCADE)
     loan = models.IntegerField(default=None, blank=True, null=True)
     payment_amount = models.FloatField()
