@@ -40,10 +40,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'digi_save_vsla_api',
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
+    'digi_save_vsla_api',
     
 ]
 
