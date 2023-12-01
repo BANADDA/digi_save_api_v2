@@ -36,10 +36,22 @@ class Users(AbstractUser):
     phone = models.CharField(max_length=15, unique=True)
     sex = models.CharField(max_length=10)
     
+    is_staff = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
 
-class UserProfiles(AbstractUser):
+    def save(self, *args, **kwargs):
+        if self.unique_code:
+            # Hash the unique_code field before saving
+            self.unique_code = make_password(self.unique_code)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.phone
+    
+
+class UserProfiles(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, blank=True, unique=True)
-    user_id = models.OneToOneField(Users, on_delete=models.CASCADE, blank=True, unique=True)
+    user_id = models.OneToOneField(Users, on_delete=models.CASCADE, blank=True, unique=True, related_name='user_profile_id')
     
     date_of_birth = models.DateField(auto_now=True, blank=True, null=True)
     image = models.TextField(default=None, blank=True, null=True)
@@ -56,7 +68,6 @@ class UserProfiles(AbstractUser):
     next_of_kin_phone_number = models.CharField(max_length=15, default=None, blank=True, null=True)
     pwd_type = models.CharField(max_length=20, default=None, blank=True, null=True)
     
-    is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
 
     def save(self, *args, **kwargs):
