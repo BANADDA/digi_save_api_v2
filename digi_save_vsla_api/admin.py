@@ -2,8 +2,8 @@ from django.contrib import admin
 from .models import *
 from rest_framework.authtoken.models import Token
 
-# # Token auth
-# admin.site.register(Token)
+# Token auth
+admin.site.register(Token)
 
 # Register your models here.
 admin.site.register(GroupProfile)
@@ -34,3 +34,8 @@ admin.site.register(LoanDisbursement)
 admin.site.register(LoanPayments)
 admin.site.register(ShareOut)
 admin.site.register(ReversedTransactions)
+admin.site.register(Country)
+admin.site.register(District)
+admin.site.register(County)
+admin.site.register(Subcounty)
+admin.site.register(Village)

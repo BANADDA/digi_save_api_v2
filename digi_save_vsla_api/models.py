@@ -1,8 +1,41 @@
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AbstractUser
+from datetime import datetime
 from django.db import models
+import uuid
+    
+class Country(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
+    name = models.CharField(max_length=255,default=None)
+    
+class District(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
+    name = models.CharField(max_length=255,default=None)
+    country = models.ForeignKey(Country, on_delete=models.CASCADE)
+    
+class County(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
+    name = models.CharField(max_length=255,default=None)
+    country = models.ForeignKey(Country, on_delete=models.CASCADE)
+    country = models.ForeignKey(District, on_delete=models.CASCADE)
+    
+class Subcounty(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
+    name = models.CharField(max_length=255,default=None)
+    country = models.ForeignKey(Country, on_delete=models.CASCADE)
+    country = models.ForeignKey(District, on_delete=models.CASCADE)
+    country = models.ForeignKey(County, on_delete=models.CASCADE)
+    
+class Village(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
+    name = models.CharField(max_length=255,default=None)
+    country = models.ForeignKey(Country, on_delete=models.CASCADE)
+    country = models.ForeignKey(District, on_delete=models.CASCADE)
+    country = models.ForeignKey(County, on_delete=models.CASCADE)
+    country = models.ForeignKey(Subcounty, on_delete=models.CASCADE)
 
 class Users(AbstractUser):
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, blank=True, unique=True)
     unique_code = models.CharField(max_length=100)
     fname = models.CharField(max_length=30)
     lname = models.CharField(max_length=30)
@@ -10,11 +43,11 @@ class Users(AbstractUser):
     phone = models.CharField(max_length=15, unique=True)
     sex = models.CharField(max_length=10)
     country = models.CharField(max_length=50)
-    date_of_birth = models.DateField(default='2000-01-01')
-    image = models.CharField(max_length=500)
-    district = models.CharField(max_length=50)
-    subCounty = models.CharField(max_length=50)
-    village = models.CharField(max_length=50)
+    date_of_birth = models.DateField(auto_now=True, blank=True, null=True)
+    image = models.TextField(default=None, blank=True, null=True)
+    district = models.ForeignKey(District, on_delete=models.CASCADE,  blank=True, null=True)
+    subCounty = models.ForeignKey(Subcounty, on_delete=models.CASCADE,  blank=True, null=True)
+    village = models.ForeignKey(Village, on_delete=models.CASCADE,  blank=True, null=True)
     number_of_dependents = models.IntegerField(default=0)
     family_information = models.TextField()
     next_of_kin_name = models.CharField(max_length=100)
@@ -35,6 +68,7 @@ class Users(AbstractUser):
         return self.phone
 
 class GroupProfile(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, blank=True, unique=True)
     groupName = models.CharField(max_length=255, default=None, blank=True, null=True)
     countryOfOrigin = models.CharField(max_length=255, default=None, blank=True, null=True)
     meetingLocation = models.CharField(max_length=255, default=None, blank=True, null=True)
@@ -52,7 +86,8 @@ class GroupProfile(models.Model):
         return self.groupName
     
 class ConstitutionTable(models.Model):
-    group_id = models.IntegerField(default=None, blank=True, null=True)
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, blank=True, unique=True)
+    group_id = models.ForeignKey(GroupProfile, on_delete=models.CASCADE)
     hasConstitution = models.IntegerField(default=None, blank=True, null=True)
     constitutionFiles = models.BinaryField(default=None, blank=True, null=True)
     usesGroupShares = models.BooleanField(default=None, blank=True, null=True)
@@ -73,73 +108,81 @@ class ConstitutionTable(models.Model):
 
 
 class GroupMembers(models.Model):
-    user_id = models.IntegerField(default=None, blank=True, null=True)
-    group_id = models.IntegerField(default=None, blank=True, null=True)
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, blank=True, unique=True)
+    user_id = models.ForeignKey(Users, on_delete=models.CASCADE)
+    group_id = models.ForeignKey(GroupProfile, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"GroupMember {self.user_id} for Group ID: {self.group_id}"
 
 class CycleSchedules(models.Model):
-    group_id = models.IntegerField(default=None, blank=True, null=True)
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, blank=True, unique=True)
+    group_id = models.ForeignKey(GroupProfile, on_delete=models.CASCADE)
     meeting_duration = models.TextField()
     number_of_meetings = models.IntegerField()
     meeting_frequency = models.TextField()
     day_of_week = models.TextField()
-    start_date = models.TextField()
-    share_out_date = models.TextField()
+    start_date = models.DateField(auto_now=True, blank=True)
+    share_out_date = models.DateField(auto_now=True, blank=True)
     
     def __str__(self):
         return f"CycleSchedules for Group ID: {self.group_id}"
     
 
 class Positions(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, blank=True, unique=True)
     name = models.TextField()
     
     def __str__(self):
         return self.name
     
 class AssignedPositions(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, blank=True, unique=True)
     position_name = models.TextField(default=None, blank=True, null=True)
-    member_id = models.IntegerField(default=None, blank=True, null=True)
-    group_id = models.IntegerField(default=None, blank=True, null=True)
+    member_id = models.ForeignKey(GroupMembers, on_delete=models.CASCADE)
+    group_id = models.ForeignKey(GroupProfile, on_delete=models.CASCADE)
     
     def __str__(self):
      return f"Assigned position for Group Id{self.group_id}"
 
 
 class GroupForm(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, blank=True, unique=True)
     group_profile_id = models.IntegerField(default=None, blank=True, null=True)
-    group_id = models.IntegerField(default=None, blank=True, null=True)
-    logged_in_users_id = models.IntegerField(default=None, blank=True, null=True)
-    constitution_id = models.IntegerField(default=None, blank=True, null=True)
-    cycle_schedule_id = models.IntegerField(default=None, blank=True, null=True)
-    group_member_id = models.IntegerField(default=None, blank=True, null=True)
-    assigned_position_id = models.IntegerField(default=None, blank=True, null=True)
+    group_id = models.ForeignKey(GroupProfile, on_delete=models.CASCADE)
+    logged_in_users_id = models.ForeignKey(Users, on_delete=models.CASCADE)
+    constitution_id = models.ForeignKey(ConstitutionTable, on_delete=models.CASCADE)
+    cycle_schedule_id = models.ForeignKey(CycleSchedules, on_delete=models.CASCADE)
+    group_member_id = models.ForeignKey(GroupMembers, on_delete=models.CASCADE)
+    assigned_position_id = models.ForeignKey(Positions, on_delete=models.CASCADE)
     
     def __str__(self):
         return f"Group Id: {self.group_id}"
     
 class SavingsAccount(models.Model):
-    logged_in_users_id = models.IntegerField(default=None, blank=True, null=True)
-    date = models.TextField()
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, blank=True, unique=True)
+    logged_in_users_id = models.ForeignKey(Users, on_delete=models.CASCADE)
+    date = models.DateField(datetime.now().date())
     purpose = models.TextField()
     amount = models.FloatField()
     
-    group = models.IntegerField(default=None, blank=True, null=True)
+    group = models.ForeignKey(GroupForm, on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.group)
 
 class GroupFees(models.Model):
-    member = models.IntegerField(default=None, blank=True, null=True)
-    group_id = models.IntegerField(default=None, blank=True, null=True)
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, blank=True, unique=True)
+    member = models.ForeignKey(GroupMembers, on_delete=models.CASCADE)
+    group_id = models.ForeignKey(GroupForm, on_delete=models.CASCADE)
     registration_fee = models.FloatField()
     
     def __str__(self):
         return str(self.member)
 
 class CycleMeeting(models.Model):
-    date = models.TextField(default=None, blank=True, null=True)
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, blank=True, unique=True)
+    date = models.DateField(auto_now=True, blank=True)
     time = models.TextField(default=None, blank=True, null=True)
     endTime = models.TextField(default=None, blank=True, null=True)
     location = models.TextField(default=None, blank=True, null=True)
@@ -157,15 +200,16 @@ class CycleMeeting(models.Model):
     socialFundContributions = models.TextField(default=None, blank=True, null=True)
     sharePurchases = models.TextField(default=None, blank=True, null=True)
     
-    group_id = models.IntegerField(default=None, blank=True, null=True)
+    group_id = models.ForeignKey(GroupForm, on_delete=models.CASCADE)
     
     def __str__(self):
         return str(self.group_id)
     
 class Meeting(models.Model):
-    date = models.TextField()
-    time = models.TextField()
-    endTime = models.TextField()
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, blank=True, unique=True)
+    date = models.DateField(auto_now=True, blank=True)
+    time = models.TextField(default=None, blank=True, null=True)
+    endTime = models.TextField(default=None, blank=True, null=True)
     location = models.TextField()
     facilitator = models.TextField()
     meetingPurpose = models.TextField()
@@ -181,95 +225,102 @@ class Meeting(models.Model):
     totalLoanFund = models.IntegerField()
     totalSocialFund = models.IntegerField()
     
-    group_id = models.IntegerField(default=None, blank=True, null=True)
-    cycle_id = models.IntegerField(default=None, blank=True, null=True)
+    group_id = models.ForeignKey(GroupForm, on_delete=models.CASCADE)
+    cycle_id = models.ForeignKey(CycleMeeting, on_delete=models.CASCADE)
     
     def __str__(self):
         return str(self.group_id)
     
     
 class MemberShares(models.Model):
-    logged_in_users_id = models.IntegerField()
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, blank=True, unique=True)
+    logged_in_users_id = models.ForeignKey(Users,  on_delete=models.CASCADE, related_name='logged_in_users_id')
     date = models.TextField()
     sharePurchases = models.TextField()
     
-    meeting = models.IntegerField(default=None, blank=True, null=True)
-    users = models.IntegerField(default=None, blank=True, null=True)
-    group_id = models.IntegerField(default=None, blank=True, null=True)
-    cycle_id = models.IntegerField(default=None, blank=True, null=True)
+    meeting = models.ForeignKey(Meeting, on_delete=models.CASCADE)
+    users = models.ForeignKey(Users,  on_delete=models.CASCADE, related_name='group_member')
+    group_id = models.ForeignKey(GroupForm, on_delete=models.CASCADE)
+    cycle_id = models.ForeignKey(CycleMeeting, on_delete=models.CASCADE)
     
     def __str__(self):
         return str(self.group_id)
     
 class WelfareAccount(models.Model):
-    logged_in_users_id = models.IntegerField(default=None, blank=True, null=True)
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, blank=True, unique=True)
+    logged_in_users_id = models.ForeignKey(Users,  on_delete=models.CASCADE)
     amount = models.FloatField()
-    group_id = models.IntegerField(default=None, blank=True, null=True)
-    meeting_id = models.IntegerField(default=None, blank=True, null=True)
-    cycle_id = models.IntegerField(default=None, blank=True, null=True)
+    group_id = models.ForeignKey(GroupForm, on_delete=models.CASCADE)
+    meeting_id = models.ForeignKey(Meeting, on_delete=models.CASCADE)
+    cycle_id = models.ForeignKey(CycleMeeting, on_delete=models.CASCADE)
     
     def __str__(self):
         return str(self.group_id)
 
 class ActiveCycleMeeting(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, blank=True, unique=True)
     
-    group_id = models.IntegerField(default=None, blank=True, null=True)
-    cycleMeetingID = models.IntegerField(default=None, blank=True, null=True)
+    group_id = models.ForeignKey(GroupForm, on_delete=models.CASCADE)
+    cycleMeetingID = models.ForeignKey(CycleMeeting, on_delete=models.CASCADE)
     
     def __str__(self):
         return str(self.group_id)
 
 class Shares(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, blank=True, unique=True)
     sharePurchases = models.TextField()
     
-    meetingId = models.IntegerField(default=None, blank=True, null=True)
-    cycle_id = models.IntegerField(default=None, blank=True, null=True)
-    group_id = models.IntegerField(default=None, blank=True, null=True)
+    meetingId = models.ForeignKey(Meeting, on_delete=models.CASCADE)
+    cycle_id = models.ForeignKey(CycleMeeting, on_delete=models.CASCADE)
+    group_id = models.ForeignKey(GroupForm, on_delete=models.CASCADE)
     
     def __str__(self):
         return str(self.group_id)
 
 
 class Social(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, blank=True, unique=True)
     socialFund = models.TextField()
-    group_id = models.IntegerField(default=None, blank=True, null=True)
-    meetingId = models.IntegerField(default=None, blank=True, null=True)
-    
+    group_id = models.ForeignKey(GroupForm, on_delete=models.CASCADE)
+    meetingId = models.ForeignKey(Meeting, on_delete=models.CASCADE)
     def __str__(self):
         return str(self.meetingId)
 
 class LoanApplications(models.Model):
-    group_id = models.IntegerField(default=None, blank=True, null=True)
-    cycle_id = models.IntegerField(default=None, blank=True, null=True)
-    meeting_id = models.IntegerField(default=None, blank=True, null=True)
-    submission_date = models.TextField()
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, blank=True, unique=True)
+    group_id = models.ForeignKey(GroupForm, on_delete=models.CASCADE)
+    cycle_id = models.ForeignKey(CycleMeeting, on_delete=models.CASCADE)
+    meeting_id = models.ForeignKey(Meeting, on_delete=models.CASCADE)
+    submission_date = models.DateField(auto_now=True, blank=True)
     loan_applicant = models.TextField()
-    group_member = models.IntegerField(default=None, blank=True, null=True)
+    group_member = models.ForeignKey(GroupMembers, on_delete=models.CASCADE)
     amount_needed = models.FloatField()
     loan_purpose = models.TextField()
-    repayment_date = models.TextField()
+    repayment_date = models.DateField(auto_now=True, blank=True)
     
     def __str__(self):
         return str(self.group_id)
 
 
 class SocialFundApplications(models.Model):
-    group_id = models.IntegerField(default=None, blank=True, null=True)
-    cycle_id = models.IntegerField(default=None, blank=True, null=True)
-    meeting_id = models.IntegerField(default=None, blank=True, null=True)
-    submission_date = models.TextField()
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, blank=True, unique=True)
+    group_id = models.ForeignKey(GroupForm, on_delete=models.CASCADE)
+    cycle_id = models.ForeignKey(CycleMeeting, on_delete=models.CASCADE)
+    meeting_id = models.ForeignKey(Meeting, on_delete=models.CASCADE)
+    submission_date = models.DateField(auto_now=True, blank=True)
     applicant = models.TextField()
     group_member = models.IntegerField(default=None, blank=True, null=True)
     amount_needed = models.FloatField()
     social_purpose = models.TextField()
-    repayment_date = models.TextField()
+    repayment_date = models.DateField(auto_now=True, blank=True)
     
     def __str__(self):
         return str(self.group_id)
 
 
 class CycleStartMeeting(models.Model):
-    group = models.IntegerField(default=None, blank=True, null=True)
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, blank=True, unique=True)
+    group = models.ForeignKey(GroupForm, on_delete=models.CASCADE)
     date = models.TextField()
     time = models.TextField()
     location = models.TextField()
@@ -290,10 +341,11 @@ class CycleStartMeeting(models.Model):
 
 
 class PaymentInfo(models.Model):
-    group = models.IntegerField(default=None, blank=True, null=True)
-    cycle_id = models.IntegerField(default=None, blank=True, null=True)
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, blank=True, unique=True)
+    group = models.ForeignKey(GroupForm, on_delete=models.CASCADE)
+    cycle_id = models.ForeignKey(CycleMeeting, on_delete=models.CASCADE)
     meeting_id = models.IntegerField(default=None, blank=True, null=True)
-    member_id = models.IntegerField(default=None, blank=True, null=True)
+    member_id = models.ForeignKey(GroupMembers, on_delete=models.CASCADE)
     payment_amount = models.FloatField()
     payment_date = models.TextField()
     
@@ -302,30 +354,33 @@ class PaymentInfo(models.Model):
     
 
 class Fines(models.Model):
-    memberId = models.IntegerField(default=None, blank=True, null=True)
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, blank=True, unique=True)
+    memberId = models.ForeignKey(GroupMembers, on_delete=models.CASCADE)
     amount = models.IntegerField()
     reason = models.TextField()
-    groupId = models.IntegerField(default=None, blank=True, null=True)
-    cycleId = models.IntegerField(default=None, blank=True, null=True)
-    meetingId = models.IntegerField(default=None, blank=True, null=True)
-    savingsAccountId = models.IntegerField(default=None, blank=True, null=True)
+    groupId = models.ForeignKey(GroupForm, on_delete=models.CASCADE)
+    cycleId = models.ForeignKey(CycleMeeting, on_delete=models.CASCADE)
+    meetingId = models.ForeignKey(Meeting, on_delete=models.CASCADE)
+    savingsAccountId = models.ForeignKey(SavingsAccount, on_delete=models.CASCADE)
     
     def __str__(self):
         return str(self.groupId)
 
 
 class GroupCycleStatus(models.Model):
-    group = models.IntegerField(default=None, blank=True, null=True)
-    cycleId = models.IntegerField(default=None, blank=True, null=True)
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, blank=True, unique=True)
+    group = models.ForeignKey(GroupForm, on_delete=models.CASCADE)
+    cycleId = models.ForeignKey(CycleMeeting, on_delete=models.CASCADE)
     is_cycle_started = models.BooleanField(default=False)
     
     def __str__(self):
         return str(self.group)
 
 class Loans(models.Model):
-    member = models.IntegerField(default=None, blank=True, null=True)
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, blank=True, unique=True)
+    member = models.ForeignKey(GroupMembers, on_delete=models.CASCADE)
     loan_applicant = models.TextField()
-    group = models.IntegerField(default=None, blank=True, null=True)
+    group = models.ForeignKey(GroupForm, on_delete=models.CASCADE)
     loan_purpose = models.TextField()
     loan_amount = models.FloatField()
     interest_rate = models.FloatField()
@@ -338,9 +393,10 @@ class Loans(models.Model):
 
 
 class LoanDisbursement(models.Model):
-    member = models.IntegerField(default=None, blank=True, null=True)
-    group = models.IntegerField(default=None, blank=True, null=True)
-    cycleId = models.IntegerField(default=None, blank=True, null=True)
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, blank=True, unique=True)
+    member = models.ForeignKey(GroupMembers, on_delete=models.CASCADE)
+    group = models.ForeignKey(GroupForm, on_delete=models.CASCADE)
+    cycleId = models.ForeignKey(CycleMeeting, on_delete=models.CASCADE)
     loan = models.IntegerField(default=None, blank=True, null=True)
     disbursement_amount = models.FloatField()
     disbursement_date = models.DateField()
@@ -350,8 +406,9 @@ class LoanDisbursement(models.Model):
 
 
 class LoanPayments(models.Model):
-    member = models.IntegerField(default=None, blank=True, null=True)
-    group = models.IntegerField(default=None, blank=True, null=True)
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, blank=True, unique=True)
+    member = models.ForeignKey(GroupMembers, on_delete=models.CASCADE)
+    group = models.ForeignKey(GroupForm, on_delete=models.CASCADE)
     loan = models.IntegerField(default=None, blank=True, null=True)
     payment_amount = models.FloatField()
     payment_date = models.TextField()
@@ -361,9 +418,10 @@ class LoanPayments(models.Model):
 
 
 class ShareOut(models.Model):
-    group = models.IntegerField(default=None, blank=True, null=True)
-    cycleId = models.IntegerField(default=None, blank=True, null=True)
-    users = models.IntegerField(default=None, blank=True, null=True)
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, blank=True, unique=True)
+    group = models.ForeignKey(GroupForm,on_delete=models.CASCADE)
+    cycleId = models.ForeignKey(CycleMeeting, on_delete=models.CASCADE)
+    users = models.ForeignKey(Users, on_delete=models.CASCADE)
     share_value = models.FloatField()
 
     def __str__(self):
@@ -371,11 +429,12 @@ class ShareOut(models.Model):
 
 
 class ReversedTransactions(models.Model):
-    group = models.IntegerField(default=None, blank=True, null=True)
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, blank=True, unique=True)
+    group = models.ForeignKey(GroupForm,on_delete=models.CASCADE)
     savings_account = models.IntegerField(default=None, blank=True, null=True)
-    logged_in_users = models.IntegerField(default=None, blank=True, null=True)
+    logged_in_users = models.ForeignKey(Users, on_delete=models.CASCADE)
     reversed_amount = models.FloatField()
-    date = models.TextField()
+    date = models.DateField(auto_now=True, blank=True)
     purpose = models.TextField()
     reversed_data = models.TextField()
     
