@@ -43,11 +43,19 @@ class Users(AbstractUser):
     phone = models.CharField(max_length=15, unique=True)
     sex = models.CharField(max_length=10)
     country = models.CharField(max_length=50)
+<<<<<<< HEAD
     date_of_birth = models.DateField(auto_now=True, blank=True, null=True)
     image = models.TextField(default=None, blank=True, null=True)
     district = models.ForeignKey(District, on_delete=models.CASCADE,  blank=True, null=True)
     subCounty = models.ForeignKey(Subcounty, on_delete=models.CASCADE,  blank=True, null=True)
     village = models.ForeignKey(Village, on_delete=models.CASCADE,  blank=True, null=True)
+=======
+    date_of_birth = models.TextField(default='2000-01-01', blank=True, null=True)
+    image = models.TextField(default=None, blank=True, null=True)
+    district = models.CharField(max_length=50)
+    subCounty = models.CharField(max_length=50)
+    village = models.CharField(max_length=50)
+>>>>>>> 4b6b8952f73da9cc133090176c901a3e3a7309ad
     number_of_dependents = models.IntegerField(default=0)
     family_information = models.TextField()
     next_of_kin_name = models.CharField(max_length=100)
