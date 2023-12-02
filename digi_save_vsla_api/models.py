@@ -68,6 +68,7 @@ class UserProfiles(models.Model):
     next_of_kin_phone_number = models.CharField(max_length=15, default=None, blank=True, null=True)
     pwd_type = models.CharField(max_length=20, default=None, blank=True, null=True)
     
+    is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
 
     def save(self, *args, **kwargs):
