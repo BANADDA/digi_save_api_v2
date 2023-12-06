@@ -18,6 +18,7 @@ def reversed_transactions_list(request):
     print("Received data:", data.get('group_id'))
     try:
         if request.method == 'POST':
+            id=data.get('id'),
             group_id = data.get('group_id')
             savings_account_id = data.get('savings_account_id')
             logged_in_users_id = data.get('logged_in_user_id')
@@ -27,6 +28,7 @@ def reversed_transactions_list(request):
             reversed_data = data.get('reversed_data')
 
             reversed_transaction = ReversedTransactions(
+                id=id,
                 group=group_id,
                 savings_account=savings_account_id,
                 logged_in_users=logged_in_users_id,
@@ -52,6 +54,7 @@ def reversed_transactions_list(request):
             # Serialize each ReversedTransactions object excluding 'id' field
             for reversed_transaction in reversed_transactions_list:
                 data = {
+                    'id': reversed_transaction.id,
                     'group_id': reversed_transaction.group,
                     'savings_account_id': reversed_transaction.savings_account,
                     'logged_in_user_id': reversed_transaction.logged_in_users,

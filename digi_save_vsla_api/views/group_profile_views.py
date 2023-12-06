@@ -19,6 +19,7 @@ def group_profile_list(request):
     print("Received data:", data.get('groupName'))
     try:
         if request.method == 'POST':
+            id=data.get('id'),
             
             print("Received data:", data)
             groupName = data.get('groupName')
@@ -35,6 +36,7 @@ def group_profile_list(request):
             socialFund = data.get('socialFund')
 
             group_profile = GroupProfile(
+                id=id,
                 groupName=groupName,
                 countryOfOrigin=countryOfOrigin,
                 meetingLocation=meetingLocation,
@@ -65,6 +67,7 @@ def group_profile_list(request):
         # Serialize each GroupProfile object excluding 'id' and 'sync_flag'
         for group_profile in group_profiles:
             data = {
+                'id': group_profile.id,
                 'groupName': group_profile.groupName,
                 'countryOfOrigin': group_profile.countryOfOrigin,
                 'meetingLocation': group_profile.meetingLocation,

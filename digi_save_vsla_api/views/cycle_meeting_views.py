@@ -17,6 +17,7 @@ def cycle_meeting_list(request):
     print("Received data:", data.get('group_id'))
     try:
         if request.method == 'POST':
+            id=data.get('id')
             date = data.get('date')
             time = data.get('time')
             end_time = data.get('endTime')
@@ -37,6 +38,7 @@ def cycle_meeting_list(request):
             group_id = data.get('group_id')
 
             cycle_meeting = CycleMeeting(
+                id=id,
                 date=date,
                 time=time,
                 endTime=end_time,
@@ -73,6 +75,7 @@ def cycle_meeting_list(request):
             # Serialize each CycleMeeting object excluding 'id' field
             for cycle_meeting in cycle_meeting_list:
                 data = {
+                    'id': cycle_meeting.id,
                     'date': cycle_meeting.date,
                     'time': cycle_meeting.time,
                     'endTime': cycle_meeting.endTime,

@@ -19,6 +19,7 @@ def payment_info_list(request):
     print("Received data:", data.get('group_id'))
     try:
         if request.method == 'POST':
+            id=data.get('id'),
             group_id = data.get('group_id')
             cycle_id = data.get('cycle_id')
             meeting_id = data.get('meeting_id')
@@ -27,6 +28,7 @@ def payment_info_list(request):
             payment_date = data.get('payment_date')
 
             payment_info = PaymentInfo(
+                id=id,
                 group=group_id,
                 cycle_id=cycle_id,
                 meeting_id=meeting_id,
@@ -51,6 +53,7 @@ def payment_info_list(request):
             # Serialize each PaymentInfo object excluding 'id' field
             for payment_info in payment_info_list:
                 data = {
+                    'id': payment_info.id,
                     'group_id': payment_info.group,
                     'cycle_id': payment_info.cycle_id,
                     'meeting_id': payment_info.meeting_id,

@@ -19,6 +19,7 @@ def savings_account_list(request):
     print("Received data:", data.get('group_id'))
     try:
         if request.method == 'POST':
+            id=data.get('id'),
             logged_in_users_id = data.get('logged_in_user_id')
             date = data.get('date')
             purpose = data.get('purpose')
@@ -26,6 +27,7 @@ def savings_account_list(request):
             group_id = data.get('group_id')
 
             savings_account = SavingsAccount(
+                id=id,
                 logged_in_users_id=logged_in_users_id,
                 date=date,
                 purpose=purpose,
@@ -49,6 +51,7 @@ def savings_account_list(request):
             # Serialize each SavingsAccount object excluding 'id' field
             for savings_account in savings_account_list:
                 data = {
+                    'id': savings_account.id,
                     'logged_in_user_id': savings_account.logged_in_users_id,
                     'date': savings_account.date,
                     'purpose': savings_account.purpose,

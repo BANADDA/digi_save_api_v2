@@ -18,11 +18,13 @@ def positions_list(request):
     print("Received data:", data)
     try:
         if request.method == 'POST':
+            id=data.get('id'),
             
             print("Received data:", data)
             name = data.get('name')
 
             group_members = Positions(
+                id=id,
                 name=name,
             )
             group_members.save()
@@ -37,26 +39,30 @@ def positions_list(request):
             positions = Positions.objects.all()
 
             # Create a list to store the serialized data
-            serialized_data = {}
+            serialized_data = []
 
         # Serialize each Positions object excluding 'id' and 'sync_flag'
         for position in positions:
-            data = {
-                'name': position.name,
-                # Exclude 'id' and 'sync_flag' fields
-            }
-
-            # Add the serialized data to the dictionary using the table name as the key
-            serialized_data['positions'] = serialized_data.get('positions', []) + [data]
-
-        # Return the serialized data as JSON
-        return JsonResponse(serialized_data, safe=False)
-
-    except Exception as e:
-        return JsonResponse({
+            print('Positions:', position)
+            try:
+                serialized_data.append({
+            'id': position.id,
+              'name': position.name
+              })
+            except Exception as e:
+                return JsonResponse({
             'status': 'error',
             'message': str(e),
-        }, status=500)
+            }, status=500) 
+        return JsonResponse({
+                  'status': 'success',
+                  'positions': serialized_data,
+                  })
+    except Exception as e:
+                return JsonResponse({
+            'status': 'error',
+            'message': str(e),
+            }, status=500) 
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def positions_detail(request, pk):

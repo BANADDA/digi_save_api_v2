@@ -71,7 +71,14 @@ class UserProfiles(models.Model):
     date_of_birth = models.DateField(auto_now=True, blank=True, null=True)
     image = models.TextField(default=None, blank=True, null=True)
     
-    country = models.ForeignKey(Country, on_delete=models.CASCADE,  blank=True, null=True)
+    unique_code = models.CharField(max_length=100)
+    fname = models.CharField(max_length=30)
+    lname = models.CharField(max_length=30)
+    email = models.EmailField()
+    phone = models.CharField(max_length=15, unique=False)
+    sex = models.CharField(max_length=10)
+    
+    country = models.CharField(max_length=30,blank=True, null=True)
     district = models.ForeignKey(District, on_delete=models.CASCADE,  blank=True, null=True)
     subCounty = models.ForeignKey(Subcounty, on_delete=models.CASCADE,  blank=True, null=True)
     village = models.ForeignKey(Village, on_delete=models.CASCADE,  blank=True, null=True)
@@ -87,10 +94,7 @@ class UserProfiles(models.Model):
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
-        # Accessing fname and lname from related Users model
-        if self.user_id:
-            return f"{self.user_id.fname} {self.user_id.lname}"
-        return "No User Associated"
+        return f"{self.fname} {self.lname}"
 
 class GroupProfile(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, blank=True, unique=True)

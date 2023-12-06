@@ -20,6 +20,7 @@ def group_form_list(request):
 
     try:
         if request.method == 'POST':
+            id=data.get('id'),
             group_profile_id = data.get('group_profile_id')
             group_id = data.get('group_id')
             logged_in_users_id = data.get('logged_in_user_id')
@@ -37,6 +38,7 @@ def group_form_list(request):
             # assigned_position = AssignedPositions.objects.get(assign_id=assigned_position_id)
 
             group_form = GroupForm(
+                id=id,
                 group_profile_id=group_profile_id,
                 group_id=group_id,
                 logged_in_users_id=logged_in_users_id,
@@ -58,6 +60,7 @@ def group_form_list(request):
 
             for form in group_forms:
                 data = {
+                    'id':form.id,
                     'group_profile_id': form.group_profile_id,
                     'group_id': form.group_id,
                     'logged_in_user_id': form.logged_in_users_id,

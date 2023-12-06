@@ -18,6 +18,7 @@ def loan_disbursement_list(request):
     print("Received data:", data.get('groupId'))
     try:
         if request.method == 'POST':
+            id=data.get('id'),
             member = data.get('member_id')
             group = data.get('groupId')
             cycle_id = data.get('cycleId')
@@ -26,6 +27,7 @@ def loan_disbursement_list(request):
             disbursement_date = data.get('disbursement_date')
 
             loan_disbursement = LoanDisbursement(
+                id=id,
                 member=member,
                 group=group,
                 cycleId=cycle_id,
@@ -50,6 +52,7 @@ def loan_disbursement_list(request):
             # Serialize each LoanDisbursement object excluding 'id' field
             for loan_disbursement in loan_disbursement_list:
                 data = {
+                    'id': loan_disbursement.id,
                     'member_id': loan_disbursement.member,
                     'groupId': loan_disbursement.group,
                     'cycleId': loan_disbursement.cycleId,

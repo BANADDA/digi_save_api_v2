@@ -8,6 +8,7 @@ admin.site.register(Token)
 # Register your models here.
 admin.site.register(GroupProfile)
 admin.site.register(ConstitutionTable)
+admin.site.register(UserProfiles)
 admin.site.register(Users)
 admin.site.register(GroupMembers)
 admin.site.register(CycleSchedules)

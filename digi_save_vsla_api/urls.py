@@ -28,7 +28,7 @@ from digi_save_vsla_api.views.share_out_views import share_out_detail, share_out
 from digi_save_vsla_api.views.shares_views import shares_detail, shares_list
 from digi_save_vsla_api.views.social_fund_applications_views import social_fund_applications_detail, social_fund_applications_list
 from digi_save_vsla_api.views.social_views import social_detail, social_list
-from digi_save_vsla_api.views.users_views import users_detail, users_list
+from digi_save_vsla_api.views.users_views import generate_users_logins, users_detail, user_profiles_list
 from digi_save_vsla_api.views.welfare_account_views import welfare_account_detail, welfare_account_list
 urlpatterns = [
     # Locations
@@ -42,7 +42,8 @@ urlpatterns = [
     path('constitution_tables/<int:pk>/', constitution_table_detail, name='constitution_table_detail'),
 
     # Users views
-    path('users/', users_list, name='users_list'),
+    path('auth_user/', generate_users_logins, name='auth_user'),
+    path('users/', user_profiles_list, name='users_list'),
     path('users/<int:pk>/', users_detail, name='users_detail'),
     path('login-with-phone-code/', login_with_phone_unique_code, name='login_with_phone_code'),
 

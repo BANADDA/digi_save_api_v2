@@ -19,6 +19,7 @@ def group_members_list(request):
     print("Received data:", data)
     try:
         if request.method == 'POST':
+            id=data.get('id'),
             
             print("Received data:", data)
             group_id = data.get('group_id')
@@ -30,6 +31,7 @@ def group_members_list(request):
 
 
             group_members = GroupMembers(
+                id=id,
                 group_id=group_id,
                 user_id=user_id,
             )
@@ -50,6 +52,7 @@ def group_members_list(request):
             # Serialize each GroupMembers object excluding 'id' and 'sync_flag'
             for member in group_members:
                 data = {
+                    'id': member.id,
                     'user_id': member.user_id,  # assuming you want the user_id's id
                     'group_id': member.group_id,  # assuming you want the group_id's id
                     # Exclude 'id' and 'sync_flag' fields

@@ -18,6 +18,7 @@ def group_fees_list(request):
 
     try:
         if request.method == 'POST':
+            id=data.get('id'),
             member_id = data.get('member_id')
             group_id = data.get('group_id')
             registration_fee = data.get('registration_fee')
@@ -27,6 +28,7 @@ def group_fees_list(request):
             # group = GroupForm.objects.get(id=group_id)
 
             fee = GroupFees(
+                id=id,
                 member=member_id,
                 group_id=group_id,
                 registration_fee=registration_fee,
@@ -48,6 +50,7 @@ def group_fees_list(request):
         # Serialize each GroupFees object excluding 'id' and 'sync_flag'
         for group_fees in group_fees:
             data = {
+                'id': group_fees.id,
                 'member_id': group_fees.member,  # assuming you want the member's id
                 'group_id': group_fees.group_id,  # assuming you want the group_id's id
                 'registration_fee': group_fees.registration_fee,

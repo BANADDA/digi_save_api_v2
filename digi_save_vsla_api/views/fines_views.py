@@ -17,6 +17,7 @@ def fines_list(request):
     print("Received data:", data.get('memberId'))
     try:
         if request.method == 'POST':
+            id=data.get('id'),
             member_id = data.get('memberId')
             amount = data.get('amount')
             reason = data.get('reason')
@@ -26,6 +27,7 @@ def fines_list(request):
             savings_account_id = data.get('savingsAccountId')
 
             fines = Fines(
+                id=id,
                 memberId=member_id,
                 amount=amount,
                 reason=reason,
@@ -51,6 +53,7 @@ def fines_list(request):
             # Serialize each Fines object excluding 'id' field
             for fines in fines_list:
                 data = {
+                    'id':fines.id,
                     'memberId': fines.memberId,
                     'amount': fines.amount,
                     'reason': fines.reason,

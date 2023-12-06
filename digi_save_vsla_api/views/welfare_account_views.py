@@ -18,6 +18,7 @@ def welfare_account_list(request):
     print("Received data:", data.get('group_id'))
     try:
         if request.method == 'POST':
+            id=data.get('id'),
             logged_in_users_id = data.get('logged_in_user_id')
             amount = data.get('amount')
             group_id = data.get('group_id')
@@ -25,6 +26,7 @@ def welfare_account_list(request):
             cycle_id = data.get('cycle_id')
             
             welfare_account = WelfareAccount(
+                id=id,
                 logged_in_users_id=logged_in_users_id,
                 amount=amount,
                 group_id=group_id,
@@ -48,6 +50,7 @@ def welfare_account_list(request):
             # Serialize each WelfareAccount object excluding 'id' field
             for welfare_account in welfare_account_list:
                 data = {
+                    'id': welfare_account.id,
                     'logged_in_user_id': welfare_account.logged_in_users_id,
                     'amount': welfare_account.amount,
                     'group_id': welfare_account.group_id,

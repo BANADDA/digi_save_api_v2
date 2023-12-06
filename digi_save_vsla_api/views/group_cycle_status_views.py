@@ -18,11 +18,13 @@ def group_cycle_status_list(request):
     print("Received data:", data.get('group_id'))
     try:
         if request.method == 'POST':
+            id=data.get('id'),
             group = data.get('group_id')
             cycle_id = data.get('cycleId')
             is_cycle_started = data.get('is_cycle_started')
 
             group_cycle_status = GroupCycleStatus(
+                id=id,
                 group=group,
                 cycleId=cycle_id,
                 is_cycle_started=is_cycle_started,
@@ -44,6 +46,7 @@ def group_cycle_status_list(request):
             # Serialize each GroupCycleStatus object excluding 'id' field
             for group_cycle_status in group_cycle_status_list:
                 data = {
+                    'id': group_cycle_status.id,
                     'group_id': group_cycle_status.group,
                     'cycleId': group_cycle_status.cycleId,
                     'is_cycle_started': group_cycle_status.is_cycle_started,

@@ -20,6 +20,7 @@ def assigned_positions_list(request):
 
     try:
         if request.method == 'POST':
+            id=data.get('id')
             position_name = data.get('position_name')
             members_id = data.get('member_id')
             group_id = data.get('group_id')
@@ -30,6 +31,7 @@ def assigned_positions_list(request):
             # position = Positions.objects.get(position_id=positions_id)
 
             assigned_position = AssignedPositions(
+                id=id,
                 position_id=members_id,
                 member_id=position_name,
                 group_id=group_id,
@@ -46,6 +48,7 @@ def assigned_positions_list(request):
             assigned_positions_data = {'assigned_positions': []}
             for assigned_position in assigned_positions:
                 data = {
+                    'id': assigned_position.id,
                     'position_name': assigned_position.position_name,
                     'member_id': assigned_position.member_id,
                     'group_id': assigned_position.group_id,

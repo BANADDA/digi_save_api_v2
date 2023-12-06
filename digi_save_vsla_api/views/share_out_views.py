@@ -18,12 +18,14 @@ def share_out_list(request):
     print("Received data:", data.get('group_id'))
     try:
         if request.method == 'POST':
+            id=data.get('id'),
             group_id = data.get('group_id')
             cycle_id = data.get('cycleId')
             users_id = data.get('user_id')
             share_value = data.get('share_value')
 
             share_out = ShareOut(
+                id=id,
                 group=group_id,
                 cycleId=cycle_id,
                 users=users_id,
@@ -46,6 +48,7 @@ def share_out_list(request):
             # Serialize each ShareOut object excluding 'id' field
             for share_out in share_out_list:
                 data = {
+                    'id': share_out.id,
                     'group_id': share_out.group,
                     'cycleId': share_out.cycleId,
                     'user_id': share_out.users,

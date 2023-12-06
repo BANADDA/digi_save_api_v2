@@ -8,6 +8,126 @@ from digi_save_vsla_api.serializers import UserProfilesSerializer, UsersSerializ
 
 @api_view(['GET', 'POST'])
 @permission_classes([AllowAny])
+def user_profiles_list(request):
+    if request.method == 'POST':
+        data = request.data
+        try:
+            UserProfiles.objects.create(
+                id=data.get('id'),
+                unique_code=data.get('unique_code'),
+                fname=data.get('fname'),
+                lname=data.get('lname'),
+                phone=data.get('phone'),
+                sex=data.get('sex'),
+                date_of_birth=data.get('date_of_birth'),
+                image=data.get('image'),
+                country=data.get('country'),
+                district=District.objects.get(id=data.get('district')),
+                subCounty=Subcounty.objects.get(id=data.get('subCounty')),
+                village=Village.objects.get(id=data.get('village')),
+                number_of_dependents=data.get('number_of_dependents'),
+                family_information=data.get('family_information'),
+                next_of_kin_name=data.get('next_of_kin_name'),
+                next_of_kin_has_phone_number=data.get('next_of_kin_has_phone_number'),
+                next_of_kin_phone_number=data.get('next_of_kin_phone_number'),
+                pwd_type=data.get('pwd_type')
+            )
+            return JsonResponse({
+                'status': 'success',
+                'message': 'User Profile Created successfully',
+            })
+
+        except Exception as e:
+            return JsonResponse({
+                'status': 'error',
+                'message': str(e),
+            }, status=500)
+
+    elif request.method == 'GET':
+        profiles = UserProfiles.objects.all()
+        user_data = []
+        for profile in profiles:
+            print('Profile:', profile)
+            try:
+                user_data.append({
+                'id': profile.id,
+                'unique_code': profile.unique_code,
+                'fname': profile.fname,
+                'lname': profile.lname,
+                'email': profile.email,
+                'phone': profile.phone,
+                'sex': profile.sex,
+                'date_of_birth': profile.date_of_birth,
+                'image': profile.image,
+                'country': profile.country if profile.country else None,
+                'district': profile.district.name if profile.district else None,
+                'subCounty': profile.subCounty.name if profile.subCounty else None,
+                'village': profile.village.name if profile.village else None,
+                'number_of_dependents': profile.number_of_dependents,
+                'family_information': profile.family_information,
+                'next_of_kin_name': profile.next_of_kin_name,
+                'next_of_kin_has_phone_number': profile.next_of_kin_has_phone_number,
+                'next_of_kin_phone_number': profile.next_of_kin_phone_number,
+                'pwd_type': profile.pwd_type,
+               })
+            except Exception as e:
+                return JsonResponse({
+            'status': 'error',
+            'message': str(e),
+        }, status=500) 
+    return JsonResponse({
+                  'status': 'success',
+                  'users': user_data,
+                  })
+
+            
+                
+                
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def generate_users_logins(request):
+    data = request.data
+    try:
+        # general responses
+        status = "Failed"
+        message = "Invalid phone number"
+
+        # get userprofile object 
+        profile = UserProfiles.objects.get(phone=data.get('phone'))
+
+        if profile and not profile.user_id:
+            # Check if a User with the same phone number already exists
+            existing_user = Users.objects.filter(phone=profile.phone).first()
+
+            if not existing_user:
+                # If a User doesn't exist, create one
+                new_user = Users.objects.create(
+                    unique_code=profile.unique_code,
+                    fname=profile.fname,
+                    lname=profile.lname,
+                    email=profile.email,
+                    phone=profile.phone,
+                    sex=profile.sex,
+                ).save()
+                profile.user_id = new_user
+                profile.save()
+                status = "Success"
+                message = "User created successfully"
+            else:
+                status = "Success"
+                message = "User already exists"
+
+            # Return a response
+            return JsonResponse({"status": status, "message": message})
+
+        else:
+            return JsonResponse({"status": status, "message": message})
+
+    except UserProfiles.DoesNotExist:
+        return JsonResponse({"status": status, "message": "UserProfile not found"}) 
+
+@api_view(['GET', 'POST'])
+@permission_classes([AllowAny])
 def users_list(request):
     if request.method == 'POST':
         data = request.data

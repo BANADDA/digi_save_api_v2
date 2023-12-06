@@ -18,12 +18,14 @@ def shares_list(request):
     print("Received data:", data.get('group_id'))
     try:
         if request.method == 'POST':
+            id=data.get('id'),
             share_purchases = data.get('sharePurchases')
             meeting_id = data.get('meetingId')
             cycle_id = data.get('cycle_id')
             group_id = data.get('group_id')
 
             shares = Shares(
+                id=id,
                 sharePurchases=share_purchases,
                 meetingId=meeting_id,
                 cycle_id=cycle_id,
@@ -46,6 +48,7 @@ def shares_list(request):
             # Serialize each Shares object excluding 'id' field
             for shares in shares_list:
                 data = {
+                    'id': shares.id,
                     'sharePurchases': shares.sharePurchases,
                     'meetingId': shares.meetingId,
                     'cycle_id': shares.cycle_id,

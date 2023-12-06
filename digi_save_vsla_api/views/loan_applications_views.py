@@ -18,6 +18,7 @@ def loan_applications_list(request):
     print("Received data:", data.get('group_id'))
     try:
         if request.method == 'POST':
+            id=data.get('id'),
             group_id = data.get('group_id')
             cycle_id = data.get('cycle_id')
             meeting_id = data.get('meetingId')
@@ -29,6 +30,7 @@ def loan_applications_list(request):
             repayment_date = data.get('repayment_date')
 
             loan_application = LoanApplications(
+                id=id,
                 group_id=group_id,
                 cycle_id=cycle_id,
                 meeting_id=meeting_id,
@@ -56,6 +58,7 @@ def loan_applications_list(request):
             # Serialize each LoanApplications object excluding 'id' field
             for loan_application in loan_applications_list:
                 data = {
+                    'id': loan_application.id,
                     'group_id': loan_application.group_id,
                     'cycle_id': loan_application.cycle_id,
                     'meetingId': loan_application.meeting_id,

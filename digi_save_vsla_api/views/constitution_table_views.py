@@ -17,6 +17,7 @@ def constitution_table_list(request):
     data = request.data
     try:
         if request.method == 'POST':
+            id=data.get('id'),
             group_id = data.get('group_id')
             hasConstitution = data.get('hasConstitution')
             constitutionFiles = data.get('constitutionFiles')
@@ -37,6 +38,7 @@ def constitution_table_list(request):
             # group_profile = GroupProfile.objects.get(profile_id=group_id)
 
             constitution = ConstitutionTable(
+                id=id,
                 group_id=group_id,
                 hasConstitution=hasConstitution,
                 constitutionFiles=constitutionFiles,
@@ -70,6 +72,7 @@ def constitution_table_list(request):
         # Serialize each ConstitutionTable object excluding 'id' and 'sync_flag'
         for constitution_table in constitution_tables:
             data = {
+                'id':constitution_table.id,
                 'group_id': constitution_table.group_id,  # assuming you want the group_id's id
                 'hasConstitution': constitution_table.hasConstitution,
                 'constitutionFiles': constitution_table.constitutionFiles,

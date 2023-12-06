@@ -18,11 +18,13 @@ def social_list(request):
     print("Received data:", data.get('meetingId'))
     try:
         if request.method == 'POST':
+            id=data.get('id'),
             group_id = data.get('group_id')
             social_fund = data.get('socialFund')
             meeting_id = data.get('meetingId')
 
             social = Social(
+                id=id,
                 group_id=group_id,
                 socialFund=social_fund,
                 meetingId=meeting_id,
@@ -44,6 +46,7 @@ def social_list(request):
             # Serialize each Social object excluding 'id' field
             for social in social_list:
                 data = {
+                    'id': social.id,
                     'group_id':social.group_id,
                     'socialFund': social.socialFund,
                     'meetingId': social.meetingId,

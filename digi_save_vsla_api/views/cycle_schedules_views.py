@@ -20,6 +20,7 @@ def cycle_schedules_list(request):
         if request.method == 'POST':
             
             print("Received data:", data)
+            id=data.get('id')
             group_id = data.get('group_id')
             meeting_duration = data.get('meeting_duration')
             number_of_meetings = data.get('number_of_meetings')
@@ -34,6 +35,7 @@ def cycle_schedules_list(request):
 
 
             cycle_schedules = CycleSchedules(
+                id=id,
                 group_id=group_id,
                 meeting_duration=meeting_duration,
                 number_of_meetings=number_of_meetings,
@@ -59,6 +61,7 @@ def cycle_schedules_list(request):
         # Serialize each CycleSchedules object excluding 'id' and 'sync_flag'
         for cycle_schedules in cycle_schedules:
             data = {
+                'id':cycle_schedules.id,
                 'group_id': cycle_schedules.group_id,  # assuming you want the group_id's id
                 'meeting_duration': cycle_schedules.meeting_duration,
                 'number_of_meetings': cycle_schedules.number_of_meetings,

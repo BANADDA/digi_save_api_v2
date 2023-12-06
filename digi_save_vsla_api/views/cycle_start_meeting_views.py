@@ -18,6 +18,7 @@ def cycle_start_meeting_list(request):
     print("Received data:", data.get('group_id'))
     try:
         if request.method == 'POST':
+            id=data.get('id'),
             group  = data.get('group_id')
             date = data.get('date')
             time = data.get('time')
@@ -38,6 +39,7 @@ def cycle_start_meeting_list(request):
             share_purchases = data.get('share_purchases')
 
             cycle_start_meeting = CycleStartMeeting(
+                id=id,
                 group=group,
                 date=date,
                 time=time,
@@ -74,6 +76,7 @@ def cycle_start_meeting_list(request):
             # Serialize each CycleStartMeeting object excluding 'id' field
             for cycle_start_meeting in cycle_start_meetings:
                 data = {
+                    'id':cycle_start_meeting.id,
                     'group_id':cycle_start_meeting.group,
                     'date': cycle_start_meeting.date,
                     'time': cycle_start_meeting.time,

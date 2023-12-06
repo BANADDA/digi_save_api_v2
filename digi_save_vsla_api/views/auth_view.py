@@ -38,73 +38,37 @@ def login_with_phone_unique_code(request):
                 }, status=500)
                    
                 user_profile = UserProfiles.objects.get(user_id=user)
-             
-
-            is_admin = user.is_staff
-
-            if is_admin:
-
+                
                 response_data = {
-                    "status": status.HTTP_200_OK,
-                    'success': True,
-                    "Token": token.key if token else None,
-                    "is_admin": True,
-                    'user': {
-                        'id': user.id,
-                        'fname': user.fname,
-                        'lname': user.lname,
-                        'email': user.email,
-                        'unique_code':user.unique_code,
-                        'phone': user.phone,
-                        'sex': user.sex,
-                        # Include UserProfiles data here
-                        'date_of_birth': user_profile.date_of_birth,
-                        'image': user_profile.image,
-                        'country': user_profile.country.name if user_profile.country else None,
-                        'district': user_profile.district.name if user_profile.district else None,
-                        'subCounty': user_profile.subCounty.name if user_profile.subCounty else None,
-                        'village': user_profile.village.name if user_profile.village else None,
-                        'number_of_dependents': user_profile.number_of_dependents,
-                        'family_information': user_profile.family_information,
-                        'next_of_kin_name': user_profile.next_of_kin_name,
-                        'next_of_kin_has_phone_number': user_profile.next_of_kin_has_phone_number,
-                        'next_of_kin_phone_number': user_profile.next_of_kin_phone_number,
-                        'pwd_type': user_profile.pwd_type,
-                    },
-                }
-                return JsonResponse(response_data, status=status.HTTP_200_OK)
+                "status": status.HTTP_200_OK,
+                'success': True,
+                "Token": token.key if token else None,
+                "is_admin": True,
+                'user': {
+                    'id': user_profile.id,
+                    'fname': user.fname,
+                    'lname': user.lname,
+                    'email': user.email,
+                    'unique_code':user.unique_code,
+                    'phone': user.phone,
+                    'sex': user.sex,
+                    # Include UserProfiles data here
+                    'date_of_birth': user_profile.date_of_birth,
+                    'image': user_profile.image,
+                    'country': user_profile.country if user_profile.country else None,
+                    'district': user_profile.district.name if user_profile.district else None,
+                    'subCounty': user_profile.subCounty.name if user_profile.subCounty else None,
+                    'village': user_profile.village.name if user_profile.village else None,
+                    'number_of_dependents': user_profile.number_of_dependents,
+                    'family_information': user_profile.family_information,
+                    'next_of_kin_name': user_profile.next_of_kin_name,
+                    'next_of_kin_has_phone_number': user_profile.next_of_kin_has_phone_number,
+                    'next_of_kin_phone_number': user_profile.next_of_kin_phone_number,
+                    'pwd_type': user_profile.pwd_type,
+                },
+            }
+            return JsonResponse(response_data, status=status.HTTP_200_OK)
             
-            else:
-
-                response_data = {
-                    "status": status.HTTP_200_OK,
-                    'success': True,
-                    "Token": token.key if token else None,
-                    "is_admin": False,
-                    'user': {
-                        'id': user.id,
-                        'fname': user.fname,
-                        'lname': user.lname,
-                        'email': user.email,
-                        'unique_code':user.unique_code,
-                        'phone': user.phone,
-                        'sex': user.sex,
-                        # Include UserProfiles data here
-                        'date_of_birth': user_profile.date_of_birth,
-                        'image': user_profile.image,
-                        'country': user_profile.country.name if user_profile.country else None,
-                        'district': user_profile.district.name if user_profile.district else None,
-                        'subCounty': user_profile.subCounty.name if user_profile.subCounty else None,
-                        'village': user_profile.village if user_profile.village.name else None,
-                        'number_of_dependents': user_profile.number_of_dependents,
-                        'family_information': user_profile.family_information,
-                        'next_of_kin_name': user_profile.next_of_kin_name,
-                        'next_of_kin_has_phone_number': user_profile.next_of_kin_has_phone_number,
-                        'next_of_kin_phone_number': user_profile.next_of_kin_phone_number,
-                        'pwd_type': user_profile.pwd_type,
-                    },
-                }
-                return JsonResponse(response_data, status=status.HTTP_200_OK)
         else:
             return JsonResponse({'status': 'Authentication failed'}, status=401)
     else:
