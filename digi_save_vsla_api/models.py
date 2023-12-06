@@ -7,33 +7,48 @@ import uuid
 class Country(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     name = models.CharField(max_length=255,default=None)
+
+    def __str__(self):
+        return self.name
     
 class District(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     name = models.CharField(max_length=255,default=None)
     country = models.ForeignKey(Country, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
     
 class County(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     name = models.CharField(max_length=255,default=None)
     district = models.ForeignKey(District, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
     
 class Subcounty(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     name = models.CharField(max_length=255,default=None)
     county = models.ForeignKey(County, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
     
 class Village(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     name = models.CharField(max_length=255,default=None)
     sub_country = models.ForeignKey(Subcounty, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.name
+
 class Users(AbstractUser):
     unique_code = models.CharField(max_length=100)
     fname = models.CharField(max_length=30)
     lname = models.CharField(max_length=30)
     email = models.EmailField()
-    phone = models.CharField(max_length=15, unique=True)
+    phone = models.CharField(max_length=15, unique=False)
     sex = models.CharField(max_length=10)
     
     is_staff = models.BooleanField(default=False)
@@ -51,7 +66,7 @@ class Users(AbstractUser):
 
 class UserProfiles(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, blank=True, unique=True)
-    user_id = models.OneToOneField(Users, on_delete=models.CASCADE, blank=True, unique=True, related_name='user_profile_id')
+    user_id = models.OneToOneField(Users, on_delete=models.CASCADE, blank=True, null=True, unique=True, related_name='user_profile_id')
     
     date_of_birth = models.DateField(auto_now=True, blank=True, null=True)
     image = models.TextField(default=None, blank=True, null=True)
@@ -71,14 +86,11 @@ class UserProfiles(models.Model):
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
 
-    def save(self, *args, **kwargs):
-        if self.unique_code:
-            # Hash the unique_code field before saving
-            self.unique_code = make_password(self.unique_code)
-        super().save(*args, **kwargs)
-
     def __str__(self):
-        return self.phone
+        # Accessing fname and lname from related Users model
+        if self.user_id:
+            return f"{self.user_id.fname} {self.user_id.lname}"
+        return "No User Associated"
 
 class GroupProfile(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, blank=True, unique=True)

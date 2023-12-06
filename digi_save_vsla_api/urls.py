@@ -13,6 +13,7 @@ from digi_save_vsla_api.views.group_form_views import group_form_detail, group_f
 from digi_save_vsla_api.views.group_members_views import group_members_detail, group_members_list
 
 from digi_save_vsla_api.views.group_profile_views import group_profile_detail, group_profile_list
+from digi_save_vsla_api.views.loaction_view import get_location_data
 from digi_save_vsla_api.views.loan_applications_views import loan_applications_detail, loan_applications_list
 from digi_save_vsla_api.views.loan_disbursement_views import loan_disbursement_detail, loan_disbursement_list
 from digi_save_vsla_api.views.loan_payments_views import loan_payments_detail, loan_payments_list
@@ -30,6 +31,8 @@ from digi_save_vsla_api.views.social_views import social_detail, social_list
 from digi_save_vsla_api.views.users_views import users_detail, users_list
 from digi_save_vsla_api.views.welfare_account_views import welfare_account_detail, welfare_account_list
 urlpatterns = [
+    # Locations
+    path('locations/', get_location_data, name='get_location_data'),
     # GroupProfile views
     path('group_profiles/', group_profile_list, name='group_profile_list'),
     path('group_profiles/<int:pk>/', group_profile_detail, name='group_profile_detail'),

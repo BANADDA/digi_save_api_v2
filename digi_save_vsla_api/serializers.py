@@ -4,6 +4,10 @@ from rest_framework import serializers
 from .models import *
 
 
+class UserProfilesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfiles
+        fields = '__all__'  
 class GroupFormSerializer(serializers.ModelSerializer):
     class Meta:
         model = GroupForm
